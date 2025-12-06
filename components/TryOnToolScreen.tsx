@@ -4,9 +4,24 @@ import { LinearGradient } from 'expo-linear-gradient';
 import * as MediaLibrary from 'expo-media-library';
 import { useRouter } from 'expo-router';
 import * as Sharing from 'expo-sharing';
-import { ArrowLeft, Camera, CheckCircle2, Download, Flag, Share2, Shirt, Sparkles, User } from 'lucide-react-native';
+// 1. Agregamos los nuevos iconos necesarios: Home, Palette, Image (ImageIcon)
+import { 
+  ArrowLeft, 
+  Camera, 
+  CheckCircle2, 
+  Download, 
+  Flag, 
+  Home, 
+  Image as ImageIcon, 
+  Palette, 
+  Share2, 
+  Shirt, 
+  Sparkles, 
+  User, 
+  X 
+} from 'lucide-react-native';
 import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next'; // ✨
+import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Alert, Image, Modal, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { generateAIImage } from '../src/services/gemini';
@@ -16,14 +31,24 @@ interface TryOnProps {
   title: string;
   subtitle: string;
   price: number;
-  backgroundImage: string; // ✨ NUEVA PROP
+  backgroundImage: string;
+  // 2. Nuevas propiedades para hacerlo dinámico
+  apiMode: string;        // 'tryon' o 'styletransfer'
+  isInteriorMode?: boolean; // true para casas, false (o undefined) para ropa
 }
 
-export default function TryOnToolScreen({ title, subtitle, price, backgroundImage }: TryOnProps) {
+export default function TryOnToolScreen({ 
+  title, 
+  subtitle, 
+  price, 
+  backgroundImage, 
+  apiMode, 
+  isInteriorMode = false 
+}: TryOnProps) {
   const router = useRouter();
-  const { t } = useTranslation(); // ✨
+  const { t } = useTranslation();
   
-  // --- ESTADOS PARA LAS 2 IMÁGENES ---
+  // --- ESTADOS ---
   const [userImage, setUserImage] = useState<string | null>(null);
   const [garmentImage, setGarmentImage] = useState<string | null>(null);
   
@@ -51,7 +76,7 @@ export default function TryOnToolScreen({ title, subtitle, price, backgroundImag
 
     const options: ImagePicker.ImagePickerOptions = {
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: false, // 🔥 FIX: Desactiva el crop para permitir fotos 9:16 completas y evitar glitches de UI
+      allowsEditing: false, 
       quality: 0.8,
     };
 
@@ -76,11 +101,11 @@ export default function TryOnToolScreen({ title, subtitle, price, backgroundImag
     if (!userImage || !garmentImage) return;
     setIsProcessing(true);
     try {
-      const generated = await generateAIImage(userImage, 'tryon', null, garmentImage);
+      // 3. CAMBIO CLAVE: Usamos 'apiMode' dinámico en lugar de 'tryon' fijo
+      const generated = await generateAIImage(userImage, apiMode, null, garmentImage);
       if (generated) setResultImage(generated);
       else Alert.alert(t('common.error'), t('common.error_generation'));
     } catch (error: any) { 
-      // ✅ DETECCIÓN DE SALDO INSUFICIENTE
       if (error.message === 'INSUFFICIENT_CREDITS') {
         Alert.alert(
           t('common.insufficient_title'),
@@ -121,24 +146,34 @@ export default function TryOnToolScreen({ title, subtitle, price, backgroundImag
 
       if (finalStatus !== 'granted') return Alert.alert(t('common.permission_denied'));
 
-      const filename = FileSystem.cacheDirectory + `aura_tryon_${Date.now()}.png`;
+      // Usamos apiMode en el nombre del archivo para diferenciar
+      const filename = FileSystem.cacheDirectory + `aura_${apiMode}_${Date.now()}.png`;
       const base64Code = resultImage.includes('base64,') ? resultImage.split('base64,')[1] : resultImage;
       await FileSystem.writeAsStringAsync(filename, base64Code, { encoding: 'base64' });
       await MediaLibrary.createAssetAsync(filename);
       Alert.alert(t('common.saved'), t('common.saved_msg'));
-    } catch (error) { Alert.alert(t('common.error'), t('common.error_technical')); } finally { setIsSaving(false); }
+    } catch (error) { 
+      Alert.alert(t('common.error'), t('common.error_technical')); 
+    } finally { 
+      setIsSaving(false); 
+    }
   };
 
   const handleShare = async () => {
     if (!resultImage) return;
     setIsSharing(true);
     try {
-        const filename = FileSystem.cacheDirectory + `share_tryon_${Date.now()}.png`;
+        const filename = FileSystem.cacheDirectory + `share_${apiMode}_${Date.now()}.png`;
         const base64Code = resultImage.includes('base64,') ? resultImage.split('base64,')[1] : resultImage;
         await FileSystem.writeAsStringAsync(filename, base64Code, { encoding: 'base64' });
         if (await Sharing.isAvailableAsync()) { await Sharing.shareAsync(filename); }
-    } catch (error) { Alert.alert(t('common.error'), t('common.share_error')); } finally { setIsSharing(false); }
+    } catch (error) { 
+      Alert.alert(t('common.error'), t('common.share_error')); 
+    } finally { 
+      setIsSharing(false); 
+    }
   };
+
   const handleReport = () => {
     Alert.alert(
       t('report.title'),
@@ -162,9 +197,9 @@ export default function TryOnToolScreen({ title, subtitle, price, backgroundImag
   };
 
   const confirmReport = async (reason: string) => {
-    // Nota: Aquí usamos 'tryon' como featureId fijo
-    await reportContent('tryon', reason, resultImage);
-    setResultImage(null); // Ocultamos la imagen inmediatamente
+    // 4. CAMBIO CLAVE: Reportamos usando el apiMode correcto
+    await reportContent(apiMode, reason, resultImage);
+    setResultImage(null); 
   };
 
   if (resultImage) {
@@ -174,21 +209,22 @@ export default function TryOnToolScreen({ title, subtitle, price, backgroundImag
         <LinearGradient colors={['transparent', 'rgba(0,0,0,0.9)']} className="absolute bottom-0 w-full h-1/2" />
         <SafeAreaView className="flex-1 justify-between px-6 pb-8">
 
-          {/* 🟢 REEMPLÁZALO POR ESTO: */}
-<View className="flex-row justify-between items-start pt-4">
-  {/* Botón de Reporte */}
-  <TouchableOpacity 
-    onPress={handleReport}
-    className="w-10 h-10 bg-black/40 rounded-full items-center justify-center border border-white/10"
-  >
-    <Flag size={20} color="#ef4444" />
-  </TouchableOpacity>
+          <View className="flex-row justify-between items-start pt-4">
+            <TouchableOpacity 
+              onPress={handleReport}
+              className="w-10 h-10 bg-black/40 rounded-full items-center justify-center border border-white/10"
+            >
+              <Flag size={20} color="#ef4444" />
+            </TouchableOpacity>
 
-  {/* Etiqueta Original */}
-  <View className="bg-purple-600 px-3 py-1 rounded-full border border-white/20">
-    <Text className="text-white font-bold text-xs">VIRTUAL TRY ON ✨</Text>
-  </View>
-</View>
+            {/* 5. Etiqueta dinámica */}
+            <View className="bg-purple-600 px-3 py-1 rounded-full border border-white/20">
+              <Text className="text-white font-bold text-xs">
+                {isInteriorMode ? "STYLE TRANSFER ✨" : "VIRTUAL TRY ON ✨"}
+              </Text>
+            </View>
+          </View>
+
           <View>
             <Text className="text-white text-3xl font-bold text-center mb-6">{t('tryon_tool.result_title')}</Text>
             <View className="flex-row gap-4 mb-4">
@@ -208,7 +244,6 @@ export default function TryOnToolScreen({ title, subtitle, price, backgroundImag
 
   return (
     <View className="flex-1 bg-[#0f0f0f]">
-      {/* ✨ FONDO AMBIENTADO CON BLUR ✨ */}
       <Image 
         source={{ uri: backgroundImage }} 
         className="absolute w-full h-full opacity-60" 
@@ -238,20 +273,24 @@ export default function TryOnToolScreen({ title, subtitle, price, backgroundImag
           >
             {userImage ? (
               <>
-                {/* -----------------------------------------------------------------
-                    CORRECCIÓN 2: Cambiamos 'cover' a 'contain' para que la foto
-                    quepa entera dentro del marco sin cortarse (zoom out automático).
-                   ----------------------------------------------------------------- */}
                 <Image source={{ uri: userImage }} className="w-full h-full opacity-80" resizeMode="contain" />
                 <View className="absolute top-3 right-3 bg-indigo-500 rounded-full p-1"><CheckCircle2 size={16} color="white" /></View>
-                <View className="absolute bottom-0 w-full bg-black/60 p-2 items-center"><Text className="text-white font-bold text-xs">{t('tryon_tool.user_photo')}</Text></View>
+                <View className="absolute bottom-0 w-full bg-black/60 p-2 items-center">
+                    {/* 6. Texto dinámico para la Foto 1 */}
+                    <Text className="text-white font-bold text-xs">
+                        {isInteriorMode ? t('styletransfer.room_photo') : t('tryon_tool.user_photo')}
+                    </Text>
+                </View>
               </>
             ) : (
               <View className="items-center justify-center h-full">
                 <View className="w-16 h-16 bg-white/10 rounded-full items-center justify-center mb-3">
-                    <User size={32} color="#a1a1aa" />
+                    {/* 7. Icono dinámico para la Foto 1 */}
+                    {isInteriorMode ? <Home size={32} color="#a1a1aa" /> : <User size={32} color="#a1a1aa" />}
                 </View>
-                <Text className="text-white font-bold text-lg">{t('tryon_tool.step_1')}</Text>
+                <Text className="text-white font-bold text-lg">
+                    {isInteriorMode ? t('styletransfer.step_1') : t('tryon_tool.step_1')}
+                </Text>
               </View>
             )}
           </TouchableOpacity>
@@ -264,7 +303,7 @@ export default function TryOnToolScreen({ title, subtitle, price, backgroundImag
             </View>
           </View>
 
-          {/* TARJETA 2: PRENDA */}
+          {/* TARJETA 2: PRENDA / ESTILO */}
           <TouchableOpacity 
             onPress={() => openPicker('garment')}
             activeOpacity={0.9}
@@ -272,17 +311,24 @@ export default function TryOnToolScreen({ title, subtitle, price, backgroundImag
           >
             {garmentImage ? (
               <>
-                {/* CORRECCIÓN 2: También aquí usamos 'contain' */}
                 <Image source={{ uri: garmentImage }} className="w-full h-full opacity-80" resizeMode="contain" />
                 <View className="absolute top-3 right-3 bg-purple-500 rounded-full p-1"><CheckCircle2 size={16} color="white" /></View>
-                <View className="absolute bottom-0 w-full bg-black/60 p-2 items-center"><Text className="text-white font-bold text-xs">{t('tryon_tool.outfit_photo')}</Text></View>
+                <View className="absolute bottom-0 w-full bg-black/60 p-2 items-center">
+                    {/* 8. Texto dinámico para la Foto 2 */}
+                    <Text className="text-white font-bold text-xs">
+                        {isInteriorMode ? t('styletransfer.style_photo') : t('tryon_tool.outfit_photo')}
+                    </Text>
+                </View>
               </>
             ) : (
               <View className="items-center justify-center h-full">
                 <View className="w-16 h-16 bg-white/10 rounded-full items-center justify-center mb-3">
-                    <Shirt size={32} color="#a1a1aa" />
+                    {/* 9. Icono dinámico para la Foto 2 */}
+                    {isInteriorMode ? <Palette size={32} color="#a1a1aa" /> : <Shirt size={32} color="#a1a1aa" />}
                 </View>
-                <Text className="text-white font-bold text-lg">{t('tryon_tool.step_2')}</Text>
+                <Text className="text-white font-bold text-lg">
+                    {isInteriorMode ? t('styletransfer.step_2') : t('tryon_tool.step_2')}
+                </Text>
               </View>
             )}
           </TouchableOpacity>
