@@ -50,6 +50,35 @@ export default function HomeScreen() {
   // --- CONFIGURACIÓN DE RUTAS DINÁMICA (PARA TRADUCCIONES) ---
   const TOOLS = [
     { 
+      id: 'interiordesign', 
+      route: '/features/interiordesign', 
+      title: t('tools.interiordesign.title'), 
+      subtitle: t('tools.interiordesign.subtitle'), 
+      price: getCost('interiordesign', 3), 
+      // Imagen placeholder temporal
+      image: 'https://rizzflows.com/img_aura/gallery/placeholder1.png', 
+      badge: 'NEW' 
+    },
+    { 
+      id: 'exteriordesign', 
+      route: '/features/exteriordesign', 
+      title: t('tools.exteriordesign.title'), 
+      subtitle: t('tools.exteriordesign.subtitle'), 
+      price: getCost('exteriordesign', 3), 
+      // Imagen placeholder para exterior
+      image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&q=80', 
+      badge: 'PRO' 
+    },
+    { 
+      id: 'gardendesign', 
+      route: '/features/gardendesign', 
+      title: t('tools.gardendesign.title'), 
+      subtitle: t('tools.gardendesign.subtitle'), 
+      price: getCost('gardendesign', 3), 
+      image: 'https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?w=600', 
+      badge: 'PRO' 
+    },
+    { 
      id: 'styletransfer', 
      route: '/features/styletransfer', 
      title: t('tools.styletransfer.title'), 
@@ -59,8 +88,8 @@ export default function HomeScreen() {
      badge: 'FUN' 
    },
    { 
-     id: 'stylist', 
-     route: '/features/stylist', 
+     id: 'interiordesign', 
+     route: '/features/interiordesign', 
      title: t('tools.stylist.title'), 
      subtitle: t('tools.stylist.subtitle'), 
      price: getCost('stylist', 2), // <--- CAMBIO: Precio dinámico (default 2)

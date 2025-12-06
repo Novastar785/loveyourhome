@@ -14,6 +14,8 @@
   },
   "tools": {
     "tryon": { "title": "Virtual Try-On", "subtitle": "Pruebate cualquier outfit" },
+    "interiordesign": { "title": "Diseño de Interiores", "subtitle": "Rediseña tu espacio" },
+    "exteriordesign": { "title": "Diseño Exterior", "subtitle": "Renueva tu fachada" },
     "stylist": { "title": "Change your Style", "subtitle": "Tu vibra Tu estilo" },
     "hairstudio": { "title": "Hair Studio", "subtitle": "Prueba nuevos colores y cortes" },
     "fitness": { "title": "Fitness Body", "subtitle": "Tu versión más atlética" },
@@ -234,6 +236,36 @@
     "delete_error": "No se pudo eliminar la cuenta. Intente de nuevo.",
     "subject": "Soporte Aura AI",
     "error_mail": "No se pudo abrir la aplicación de correo."
+  },
+  "wizard": {
+    "step_room_title": "Elige el tipo de habitación",
+    "step_style_title": "Elige el estilo visual",
+    "step_house_title": "Elige el tipo de casa", 
+    "step_facade_title": "Elige el estilo de fachada" 
+  },
+  "rooms": {
+    "living": "Sala de Estar",
+    "bedroom": "Dormitorio",
+    "kitchen": "Cocina",
+    "bathroom": "Baño",
+    "office": "Oficina"
+  },
+  "houses": {
+    "modern_home": "Casa Moderna",
+    "villa": "Villa",
+    "cottage": "Cabaña",
+    "bungalow": "Bungalow",
+    "mansion": "Mansión"
+  },
+  "styles": {
+    "modern": "Moderno",
+    "industrial": "Industrial",
+    "mediterranean": "Mediterráneo",
+    "scandinavian": "Escandinavo",
+    "farmhouse": "Casa de Campo",
+    "boho": "Bohemio",
+    "luxury": "Lujo",
+    "minimalist": "Minimalista"
   },
   "report": {
    "button": "Reportar",
