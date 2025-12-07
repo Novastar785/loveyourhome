@@ -14,7 +14,7 @@ import {
 } from 'lucide-react-native';
 import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, Linking, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, Image, Linking, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native';
 import Purchases from 'react-native-purchases';
 import RevenueCatUI from 'react-native-purchases-ui';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -90,25 +90,49 @@ export default function ProfileScreen() {
     else Alert.alert(t('common.error'), t('profile.error_mail'));
   };
 
+  // AJUSTE VISUAL: Colores unificados al tono Taupe/Marrón cálido (#AF9883) y fondos crema (#F5F0EB)
   const subscriptionItems = [
-    { icon: CreditCard, label: t('profile.manage_sub'), action: openCustomerCenter, subtitle: t('profile.manage_sub_desc'), iconColor: '#3b82f6', bgIcon: 'bg-blue-100' },
-    { icon: Rocket, label: t('profile.upgrade'), action: openUpgradePaywall, subtitle: t('profile.upgrade_desc'), iconColor: '#8b5cf6', bgIcon: 'bg-violet-100' },
-    { icon: RefreshCcw, label: t('store.restore_title'), action: handleRestore, subtitle: t('profile.restore_desc'), iconColor: '#14b8a6', bgIcon: 'bg-teal-100' },
+    { icon: CreditCard, label: t('profile.manage_sub'), action: openCustomerCenter, subtitle: t('profile.manage_sub_desc'), iconColor: '#AF9883', bgIcon: 'bg-[#F5F0EB]' },
+    { icon: Rocket, label: t('profile.upgrade'), action: openUpgradePaywall, subtitle: t('profile.upgrade_desc'), iconColor: '#AF9883', bgIcon: 'bg-[#F5F0EB]' },
+    { icon: RefreshCcw, label: t('store.restore_title'), action: handleRestore, subtitle: t('profile.restore_desc'), iconColor: '#A8A29E', bgIcon: 'bg-[#F5F5F4]' },
   ];
 
+  // AJUSTE VISUAL: Iconos neutros (Gris cálido) para no romper la estética limpia
   const legalItems = [
-    { icon: Lock, label: t('profile.privacy'), action: () => router.push('/privacy' as any), iconColor: '#10b981', bgIcon: 'bg-emerald-100' },
-    { icon: FileText, label: t('profile.terms'), action: () => router.push('/terms' as any), iconColor: '#f59e0b', bgIcon: 'bg-amber-100' },
-    { icon: HelpCircle, label: t('profile.support'), action: handleSupport, iconColor: '#ec4899', bgIcon: 'bg-pink-100' },
-    { icon: Trash2, label: t('profile.delete_account'), action: handleDeleteAccount, iconColor: '#ef4444', bgIcon: 'bg-red-100' },
+    { icon: Lock, label: t('profile.privacy'), action: () => router.push('/privacy' as any), iconColor: '#A8A29E', bgIcon: 'bg-[#F5F5F4]' },
+    { icon: FileText, label: t('profile.terms'), action: () => router.push('/terms' as any), iconColor: '#A8A29E', bgIcon: 'bg-[#F5F5F4]' },
+    { icon: HelpCircle, label: t('profile.support'), action: handleSupport, iconColor: '#A8A29E', bgIcon: 'bg-[#F5F5F4]' },
+    { icon: Trash2, label: t('profile.delete_account'), action: handleDeleteAccount, iconColor: '#EF4444', bgIcon: 'bg-red-50' },
   ];
 
   return (
-    <View className="flex-1 bg-white">
+    // Cambiamos bg-white al color base principal para que coincida con el final del gradiente
+    <View className="flex-1 bg-[#F5F5F4]">
+      {/* NUEVO: Imagen de fondo en la parte superior */}
+      <Image
+        // Placeholder de imagen de interiorismo/arquitectura
+        source={{ uri: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=2053&auto=format&fit=crop' }}
+        // className: posicionamiento absoluto, ocupa todo el ancho, altura de 350 unidades, y una ligera opacidad para que no sea muy agresiva
+        className="absolute top-0 left-0 right-0 h-[350px] opacity-90"
+        resizeMode="cover"
+      />
+
+      {/* AJUSTE VISUAL: Gradiente modificado para crear el efecto de desvanecimiento sobre la imagen */}
       <LinearGradient
-        colors={['#EEF2FF', '#ffffff', '#F5F3FF']}
+        // CAMBIO CLAVE: 
+        // 1. El primer color ahora es 'rgba(..., 0)' (Totalmente transparente)
+        // 2. El segundo color es el sólido, pero empieza más abajo.
+        colors={['rgba(250, 250, 249, 0)', '#FAFAF9', '#F5F5F4']}
+        
+        // CAMBIO CLAVE: locations
+        // [0, 0.5, 1] significa:
+        // - En el punto 0 (arriba): Es transparente (se ve la foto full).
+        // - En el punto 0.5 (mitad de la pantalla): Se vuelve color crema sólido.
+        // - Del 0.5 para abajo: Es todo sólido para que se lea el contenido.
+        locations={[0, 0.5, 1]}
+        
         start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
+        end={{ x: 0, y: 1 }}
         className="absolute inset-0"
       />
       <StatusBar barStyle="dark-content" />
@@ -119,11 +143,13 @@ export default function ProfileScreen() {
           {/* HEADER PERFIL */}
           <View className="items-center mt-10 mb-8 px-6">
             <View className="relative mb-4">
-              <View className="w-28 h-28 rounded-full border-4 border-white bg-white shadow-xl items-center justify-center">
-                <User size={56} color="#6366f1" />
+              {/* AJUSTE VISUAL: Borde crema (#FFFBF7) en lugar de blanco puro para suavidad */}
+              <View className="w-28 h-28 rounded-full border-4 border-[#FFFBF7] bg-white shadow-xl items-center justify-center">
+                <User size={56} color="#A8A29E" />
               </View>
               
-              <View className={`absolute -bottom-3 self-center px-4 py-1.5 rounded-full border border-white flex-row items-center shadow-md ${isSubscribed ? 'bg-indigo-600' : 'bg-gray-800'}`}>
+              {/* AJUSTE VISUAL: Color de suscripción Taupe (#AF9883) */}
+              <View className={`absolute -bottom-3 self-center px-4 py-1.5 rounded-full border border-white flex-row items-center shadow-md ${isSubscribed ? 'bg-[#AF9883]' : 'bg-gray-800'}`}>
                 {isSubscribed && <InfinityIcon size={12} color="white" strokeWidth={3} className="mr-1" />}
                 <Text className="text-white text-[10px] font-bold uppercase tracking-widest">
                   {isSubscribed ? t('profile.status_premium') : t('profile.status_free')}
@@ -140,8 +166,9 @@ export default function ProfileScreen() {
             </Text>
           </View>
 
-           {/* ESTADÍSTICAS (Uso de clases de utilidad) */}
-           <View className="mx-6 mb-8 bg-white/60 rounded-3xl p-4 border border-white/50 shadow-lg">
+           {/* ESTADÍSTICAS */}
+           {/* AJUSTE VISUAL: Fondo crema sólido (#FFFBF7) con borde sutil (#F2EBE6) para contraste */}
+           <View className="mx-6 mb-8 bg-[#FFFBF7] rounded-3xl p-4 border border-[#F2EBE6] shadow-sm">
              <View className="items-center mb-3 border-b border-gray-200/60 pb-3">
                 <Text className="text-gray-400 text-[10px] uppercase tracking-widest mb-1">{t('profile.total_balance')}</Text>
                 <Text className="text-4xl font-extrabold text-gray-900">{credits.total}</Text>
@@ -150,12 +177,14 @@ export default function ProfileScreen() {
               <View className="flex-row">
                 <View className="flex-1 items-center border-r border-gray-200/60">
                   <Text className="text-xl font-bold text-gray-800">{credits.sub}</Text>
-                  <Text className="text-amber-500 text-[10px] font-bold uppercase tracking-wider mt-1">{t('profile.plan_premium')}</Text>
+                  {/* AJUSTE VISUAL: Texto Taupe (#AF9883) */}
+                  <Text className="text-[#AF9883] text-[10px] font-bold uppercase tracking-wider mt-1">{t('profile.plan_premium')}</Text>
                 </View>
 
                 <View className="flex-1 items-center">
                   <Text className="text-xl font-bold text-gray-800">{credits.pack}</Text>
-                  <Text className="text-indigo-500 text-[10px] font-bold uppercase tracking-wider mt-1">{t('profile.plan_standard')}</Text>
+                  {/* AJUSTE VISUAL: Texto Gris Piedra (#78716c - stone-500) */}
+                  <Text className="text-[#78716c] text-[10px] font-bold uppercase tracking-wider mt-1">{t('profile.plan_standard')}</Text>
                 </View>
               </View>
           </View>
@@ -179,12 +208,14 @@ function MenuSection({ title, items }: { title: string, items: any[] }) {
   return (
     <View className="px-6 mb-6">
       <Text className="text-gray-400 text-xs font-bold uppercase tracking-widest mb-3 ml-2">{title}</Text>
-      <View className="bg-white/80 rounded-3xl overflow-hidden border border-white shadow-sm">
+      {/* AJUSTE VISUAL: Fondo crema sólido (#FFFBF7) y borde sutil (#F2EBE6) */}
+      <View className="bg-[#FFFBF7] rounded-3xl overflow-hidden border border-[#F2EBE6] shadow-sm">
         {items.map((item, index) => (
           <TouchableOpacity 
             key={index}
             onPress={item.action}
-            className={`flex-row items-center justify-between p-4 active:bg-gray-50 ${index !== items.length - 1 ? 'border-b border-gray-100' : ''}`}
+            // AJUSTE VISUAL: Active state color crema oscuro
+            className={`flex-row items-center justify-between p-4 active:bg-[#F2EBE6] ${index !== items.length - 1 ? 'border-b border-gray-100/50' : ''}`}
           >
             <View className="flex-row items-center gap-4 flex-1">
               <View className={`w-10 h-10 rounded-full items-center justify-center ${item.bgIcon}`}>
@@ -195,7 +226,7 @@ function MenuSection({ title, items }: { title: string, items: any[] }) {
                   {item.subtitle && <Text className="text-gray-500 text-xs mt-0.5">{item.subtitle}</Text>}
               </View>
             </View>
-            <ChevronRight size={18} color="#9CA3AF" />
+            <ChevronRight size={18} color="#A8A29E" />
           </TouchableOpacity>
         ))}
       </View>

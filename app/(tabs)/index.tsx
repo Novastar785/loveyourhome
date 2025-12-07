@@ -128,14 +128,14 @@ export default function HomeScreen() {
           <View className="flex-row justify-between items-end px-6 pt-2 mb-8">
             <View>
               <Text className="text-gray-500 text-[10px] font-bold tracking-widest uppercase mb-1">LOVE YOUR HOME</Text>
-              <Text className="text-gray-900 text-3xl font-extrabold leading-tight">Your Dream{'\n'}Home</Text>
+              <Text className="text-gray-900 text-3xl font-extrabold leading-tight">Your Dream Home</Text>
             </View>
             
-            {/* Pill de Créditos: Tailwind puro */}
-            <TouchableOpacity className="flex-row items-center bg-white/80 px-3 py-1.5 rounded-full border border-white/50 shadow-sm">
-              <View className="w-2 h-2 rounded-full bg-indigo-500 mr-2" />
-              <Text className="text-gray-900 font-bold mr-2 text-xs">{credits}</Text>
-              <Plus size={12} color="#6B7280" />
+            {/* Pill de Créditos ACTUALIZADO */}
+            <TouchableOpacity className="flex-row items-center bg-[#F5F2EF] px-3 py-1.5 rounded-full border border-[#E5E0D8] shadow-sm">
+              <View className="w-2 h-2 rounded-full bg-[#A58D76] mr-2" />
+              <Text className="text-gray-800 font-bold mr-2 text-xs">{credits}</Text>
+              <Plus size={12} color="#A58D76" />
             </TouchableOpacity>
           </View>
 
@@ -164,25 +164,33 @@ export default function HomeScreen() {
                   onPress={() => router.push(item.route as any)}
                 >
                   <Image source={{ uri: item.image }} className="w-full h-full" resizeMode="cover" />
+
+                  {/* BADGE: Posicionado arriba a la derecha */}
+                  {item.badge && (
+                    <View className="absolute top-5 right-5 bg-white/90 px-2 py-1 rounded-lg border border-white shadow-sm z-10">
+                      <Text className="text-indigo-600 text-[10px] font-bold tracking-wider">{item.badge}</Text>
+                    </View>
+                  )}
                   
                   {/* Overlay Gradiente */}
                   <LinearGradient
                     colors={['transparent', 'rgba(255,255,255,0.8)', 'rgba(255,255,255,1)']}
                     className="absolute bottom-0 w-full h-1/2 justify-end p-6"
                   >
-                    {item.badge && (
-                      <View className="absolute top-12 left-6 bg-white/90 px-2 py-1 rounded-lg border border-white shadow-sm">
-                        <Text className="text-indigo-600 text-[10px] font-bold tracking-wider">{item.badge}</Text>
-                      </View>
-                    )}
                     
                     <Text className="text-gray-900 text-3xl font-bold leading-tight mb-1">{item.title}</Text>
                     <Text className="text-gray-500 text-sm mb-5 font-medium">{item.subtitle}</Text>
                     
-                    <View className="bg-indigo-600 self-start px-6 py-3.5 rounded-2xl flex-row items-center justify-center w-full shadow-lg">
-                      <Text className="text-white font-bold mr-2">{t('tools.start_btn')}</Text>
-                      <View className="w-[1px] h-3 bg-white/30 mx-2" />
-                      <Text className="text-indigo-100 text-xs font-bold">{item.price} 💎</Text>
+                    {/* BOTÓN ACTUALIZADO: Estilo Marrón con Flecha */}
+                    <View className="bg-[#A58D76] self-start px-6 py-4 rounded-2xl flex-row items-center justify-between w-full shadow-lg">
+                      <View className="flex-row items-center">
+                        <Text className="text-white font-serif text-lg font-medium mr-2">Start Design</Text>
+                        </View>
+                      
+                      <View className="flex-row items-center opacity-80">
+                        <View className="w-[1px] h-3 bg-white/40 mx-2" />
+                        <Text className="text-white text-xs font-bold">{item.price} 💎</Text>
+                      </View>
                     </View>
                   </LinearGradient>
                 </TouchableOpacity>
