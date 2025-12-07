@@ -116,66 +116,131 @@ export default function DualImageToolScreen({
     setImg2(null);
   };
 
+// ... lógica previa igual ...
+
   if (resultImage) {
     return (
       <View className="flex-1 bg-black">
         <Image source={{ uri: resultImage }} className="absolute w-full h-full" resizeMode="contain" />
         <SafeAreaView className="flex-1 justify-between px-6 pb-8">
           <View className="flex-row justify-between pt-4">
-             <TouchableOpacity onPress={() => Alert.alert("Reported")} className="w-10 h-10 bg-black/40 rounded-full items-center justify-center"><Flag size={20} color="#ef4444" /></TouchableOpacity>
-             <TouchableOpacity onPress={reset} className="w-10 h-10 bg-black/40 rounded-full items-center justify-center"><X size={20} color="white" /></TouchableOpacity>
+             <TouchableOpacity onPress={() => Alert.alert("Reported")} className="w-10 h-10 bg-white/20 rounded-full items-center justify-center backdrop-blur-md"><Flag size={20} color="#f87171" /></TouchableOpacity>
+             <TouchableOpacity onPress={reset} className="w-10 h-10 bg-white/20 rounded-full items-center justify-center backdrop-blur-md"><X size={20} color="white" /></TouchableOpacity>
           </View>
-          <TouchableOpacity onPress={handleSave} className="bg-white h-14 rounded-xl justify-center items-center"><Text className="font-bold text-black">{t('common.save')}</Text></TouchableOpacity>
+          <TouchableOpacity onPress={handleSave} className="bg-white h-14 rounded-xl justify-center items-center shadow-lg"><Text className="font-bold text-gray-900">{t('common.save')}</Text></TouchableOpacity>
         </SafeAreaView>
       </View>
     );
   }
 
+  // Interfaz de Selección (Light)
   return (
-    <View className="flex-1 bg-[#0f0f0f]">
-      <Image source={{ uri: backgroundImage }} className="absolute w-full h-full opacity-40" blurRadius={30} resizeMode="cover" />
+    <View className="flex-1 bg-white">
+      {/* Fondo decorativo */}
+      <Image source={{ uri: backgroundImage }} className="absolute w-full h-full opacity-10" blurRadius={60} resizeMode="cover" />
+      <LinearGradient colors={['rgba(255,255,255,0.5)', '#ffffff']} className="absolute w-full h-full" />
+      
       <SafeAreaView className="flex-1 px-6">
         <View className="flex-row justify-between items-center mb-6">
-          <TouchableOpacity onPress={() => router.back()} className="w-10 h-10 bg-zinc-800 rounded-full items-center justify-center"><ArrowLeft size={20} color="white" /></TouchableOpacity>
-          <View className="bg-black/40 px-3 py-1 rounded-full"><Text className="text-zinc-300 text-xs font-bold">{price} 💎</Text></View>
+          <TouchableOpacity onPress={() => router.back()} className="w-10 h-10 bg-white rounded-full items-center justify-center border border-gray-200 shadow-sm">
+            <ArrowLeft size={20} color="#374151" />
+          </TouchableOpacity>
+          <View className="bg-white px-3 py-1 rounded-full border border-gray-200 shadow-sm">
+            <Text className="text-indigo-600 text-xs font-bold">{price} 💎</Text>
+          </View>
         </View>
 
-        <Text className="text-white text-3xl font-bold mb-2">{title}</Text>
-        <Text className="text-zinc-400 text-lg mb-8">{subtitle}</Text>
+        <Text className="text-gray-900 text-3xl font-bold mb-2">{title}</Text>
+        <Text className="text-gray-500 text-lg mb-8">{subtitle}</Text>
 
         <View className="flex-1 gap-4">
-          {/* SLOT 1 */}
-          <TouchableOpacity onPress={() => openPicker(1)} className={`flex-1 bg-zinc-900/60 rounded-3xl border-2 border-dashed ${img1 ? 'border-indigo-500' : 'border-zinc-700'} items-center justify-center relative overflow-hidden`}>
-            {img1 ? <Image source={{ uri: img1 }} className="w-full h-full opacity-80" /> : <View className="items-center"><Home size={32} color="#a1a1aa" /><Text className="text-zinc-400 font-bold mt-2">{label1}</Text></View>}
-            {img1 && <View className="absolute top-2 right-2 bg-indigo-500 p-1 rounded-full"><Check size={12} color="white" /></View>}
+          {/* SLOT 1 (Tu Espacio) */}
+          <TouchableOpacity 
+            onPress={() => openPicker(1)} 
+            className={`flex-1 rounded-[24px] border-2 border-dashed items-center justify-center relative overflow-hidden transition-all ${img1 ? 'border-indigo-500 bg-white' : 'border-gray-300 bg-gray-50'}`}
+          >
+            {img1 ? (
+                <Image source={{ uri: img1 }} className="w-full h-full opacity-90" />
+            ) : (
+                <View className="items-center gap-2">
+                    <View className="w-14 h-14 bg-white rounded-full items-center justify-center shadow-sm border border-gray-100">
+                        <Home size={28} color="#9ca3af" />
+                    </View>
+                    <Text className="text-gray-400 font-bold">{label1}</Text>
+                </View>
+            )}
+            {/* Check de confirmación */}
+            {img1 && (
+                <View className="absolute top-3 right-3 bg-indigo-500 p-1.5 rounded-full shadow-sm border border-white">
+                    <Check size={14} color="white" />
+                </View>
+            )}
           </TouchableOpacity>
 
-          {/* SLOT 2 */}
-          <TouchableOpacity onPress={() => openPicker(2)} className={`flex-1 bg-zinc-900/60 rounded-3xl border-2 border-dashed ${img2 ? 'border-purple-500' : 'border-zinc-700'} items-center justify-center relative overflow-hidden`}>
-            {img2 ? <Image source={{ uri: img2 }} className="w-full h-full opacity-80" /> : <View className="items-center"><Palette size={32} color="#a1a1aa" /><Text className="text-zinc-400 font-bold mt-2">{label2}</Text></View>}
-            {img2 && <View className="absolute top-2 right-2 bg-purple-500 p-1 rounded-full"><Check size={12} color="white" /></View>}
+          {/* SLOT 2 (Referencia) */}
+          <TouchableOpacity 
+            onPress={() => openPicker(2)} 
+            className={`flex-1 rounded-[24px] border-2 border-dashed items-center justify-center relative overflow-hidden transition-all ${img2 ? 'border-purple-500 bg-white' : 'border-gray-300 bg-gray-50'}`}
+          >
+            {img2 ? (
+                <Image source={{ uri: img2 }} className="w-full h-full opacity-90" />
+            ) : (
+                <View className="items-center gap-2">
+                    <View className="w-14 h-14 bg-white rounded-full items-center justify-center shadow-sm border border-gray-100">
+                        <Palette size={28} color="#9ca3af" />
+                    </View>
+                    <Text className="text-gray-400 font-bold">{label2}</Text>
+                </View>
+            )}
+            
+            {img2 && (
+                <View className="absolute top-3 right-3 bg-purple-500 p-1.5 rounded-full shadow-sm border border-white">
+                    <Check size={14} color="white" />
+                </View>
+            )}
           </TouchableOpacity>
         </View>
 
         <TouchableOpacity 
           disabled={!img1 || !img2 || isProcessing}
           onPress={handleGenerate}
-          className={`my-8 h-16 rounded-2xl flex-row items-center justify-center ${img1 && img2 ? 'bg-indigo-500' : 'bg-zinc-800 opacity-50'}`}
+          className={`my-8 h-16 rounded-2xl flex-row items-center justify-center shadow-lg transition-all ${img1 && img2 ? 'bg-indigo-600 shadow-indigo-300' : 'bg-gray-200 shadow-none'}`}
         >
-          {isProcessing ? <ActivityIndicator color="white" /> : <><Sparkles size={24} color="white" className="mr-2" /><Text className="text-white font-bold text-lg">Transferir Estilo</Text></>}
+          {isProcessing ? (
+            <ActivityIndicator color={img1 && img2 ? "white" : "#9ca3af"} />
+          ) : (
+            <>
+                <Sparkles size={24} color={img1 && img2 ? "white" : "#9ca3af"} className="mr-2" />
+                <Text className={`font-bold text-lg ${img1 && img2 ? 'text-white' : 'text-gray-400'}`}>
+                    Transferir Estilo
+                </Text>
+            </>
+          )}
         </TouchableOpacity>
       </SafeAreaView>
 
       <Modal visible={showPicker} transparent animationType="slide">
-        <View className="flex-1 justify-end bg-black/60">
-          <View className="bg-zinc-900 p-6 rounded-t-3xl gap-4">
-            <Text className="text-white font-bold text-center text-lg mb-2">{t('common.select_image')}</Text>
-            <TouchableOpacity onPress={() => pickImage(true)} className="bg-zinc-800 p-4 rounded-xl flex-row gap-3"><Camera color="white" /><Text className="text-white font-bold">{t('common.camera')}</Text></TouchableOpacity>
-            <TouchableOpacity onPress={() => pickImage(false)} className="bg-zinc-800 p-4 rounded-xl flex-row gap-3"><ImageIcon color="white" /><Text className="text-white font-bold">{t('common.gallery')}</Text></TouchableOpacity>
-            <TouchableOpacity onPress={() => setShowPicker(false)} className="p-4 items-center"><Text className="text-zinc-500 font-bold">{t('common.cancel')}</Text></TouchableOpacity>
+        <View className="flex-1 justify-end bg-black/20">
+          <View className="bg-white p-6 rounded-t-[32px] gap-4 shadow-2xl">
+            <View className="w-12 h-1.5 bg-gray-200 rounded-full self-center mb-2" />
+            <Text className="text-gray-900 font-bold text-center text-xl mb-4">{t('common.select_image')}</Text>
+            
+            <TouchableOpacity onPress={() => pickImage(true)} className="bg-gray-50 p-4 rounded-2xl flex-row gap-4 items-center border border-gray-100">
+                <View className="bg-white p-2 rounded-full shadow-sm"><Camera color="#4f46e5" size={24} /></View>
+                <Text className="text-gray-700 font-bold text-lg">{t('common.camera')}</Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity onPress={() => pickImage(false)} className="bg-gray-50 p-4 rounded-2xl flex-row gap-4 items-center border border-gray-100">
+                <View className="bg-white p-2 rounded-full shadow-sm"><ImageIcon color="#4f46e5" size={24} /></View>
+                <Text className="text-gray-700 font-bold text-lg">{t('common.gallery')}</Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity onPress={() => setShowPicker(false)} className="p-4 items-center mt-2">
+                <Text className="text-gray-400 font-bold text-base">{t('common.cancel')}</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </Modal>
     </View>
-  );
+  );  
 }

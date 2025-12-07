@@ -130,81 +130,112 @@ export default function WizardToolScreen({
   if (step === 4 && resultImage) {
     return (
       <View className="flex-1 bg-black">
+        {/* Aquí mantenemos fondo negro para resaltar la imagen generada, pero los controles flotantes cambian */}
         <Image source={{ uri: resultImage }} className="absolute w-full h-full" resizeMode="contain" />
         <SafeAreaView className="flex-1 justify-between px-6 pb-8">
           <View className="flex-row justify-between pt-4">
-             <TouchableOpacity onPress={() => Alert.alert("Reported")} className="w-10 h-10 bg-black/40 rounded-full items-center justify-center"><Flag size={20} color="#ef4444" /></TouchableOpacity>
-             <TouchableOpacity onPress={reset} className="w-10 h-10 bg-black/40 rounded-full items-center justify-center"><X size={20} color="white" /></TouchableOpacity>
+             <TouchableOpacity onPress={() => Alert.alert("Reported")} className="w-10 h-10 bg-white/20 rounded-full items-center justify-center backdrop-blur-md"><Flag size={20} color="#f87171" /></TouchableOpacity>
+             <TouchableOpacity onPress={reset} className="w-10 h-10 bg-white/20 rounded-full items-center justify-center backdrop-blur-md"><X size={20} color="white" /></TouchableOpacity>
           </View>
           <View className="flex-row gap-4">
-             <TouchableOpacity onPress={handleSave} className="flex-1 bg-white h-12 rounded-xl justify-center items-center"><Text className="font-bold text-black">{t('common.save')}</Text></TouchableOpacity>
+             <TouchableOpacity onPress={handleSave} className="flex-1 bg-white h-12 rounded-xl justify-center items-center shadow-lg"><Text className="font-bold text-gray-900">{t('common.save')}</Text></TouchableOpacity>
           </View>
         </SafeAreaView>
       </View>
     );
   }
 
+  // WIZARD UI (Pasos 1, 2, 3)
   return (
-    <View className="flex-1 bg-[#0f0f0f]">
-      <Image source={{ uri: backgroundImage }} className="absolute w-full h-full opacity-20" blurRadius={30} />
+    <View className="flex-1 bg-white">
+      {/* Fondo de imagen muy sutil o desvanecido a blanco */}
+      <Image source={{ uri: backgroundImage }} className="absolute w-full h-2/3 opacity-10" blurRadius={40} />
+      <LinearGradient colors={['rgba(255,255,255,0)', '#ffffff']} className="absolute w-full h-full" />
+      
       <SafeAreaView className="flex-1 px-6">
+        {/* Header de Navegación */}
         <View className="flex-row justify-between items-center mb-6">
-          <TouchableOpacity onPress={() => step > 1 ? setStep(step - 1) : router.back()} className="w-10 h-10 bg-zinc-800 rounded-full items-center justify-center">
-            <ArrowLeft size={20} color="white" />
+          <TouchableOpacity onPress={() => step > 1 ? setStep(step - 1) : router.back()} className="w-10 h-10 bg-white rounded-full items-center justify-center border border-gray-200 shadow-sm">
+            <ArrowLeft size={20} color="#374151" />
           </TouchableOpacity>
+          
+          {/* Indicador de Pasos */}
           <View className="flex-row gap-1">
-            {[1, 2, 3].map(i => <View key={i} className={`h-1.5 rounded-full ${i <= step ? 'bg-indigo-500 w-6' : 'bg-zinc-700 w-3'}`} />)}
+            {[1, 2, 3].map(i => <View key={i} className={`h-1.5 rounded-full ${i <= step ? 'bg-indigo-500 w-6' : 'bg-gray-200 w-3'}`} />)}
           </View>
           <View className="w-10" />
         </View>
 
         <View className="flex-1">
+          {/* PASO 1: Intro / Subir Foto */}
           {step === 1 && (
             <View className="flex-1 justify-center">
-              <Text className="text-white text-3xl font-bold text-center mb-2">{title}</Text>
-              <Text className="text-zinc-400 text-center mb-8">{subtitle}</Text>
-              <TouchableOpacity onPress={() => setShowPicker(true)} className="aspect-[3/4] bg-zinc-900 rounded-3xl border-2 border-dashed border-zinc-700 items-center justify-center overflow-hidden">
-                {selectedImage ? <Image source={{ uri: selectedImage }} className="w-full h-full" /> : <View className="items-center"><Camera size={40} color="#52525b" /><Text className="text-zinc-500 mt-2 font-bold">{t('common.upload_photo')}</Text></View>}
+              <Text className="text-gray-900 text-3xl font-bold text-center mb-2">{title}</Text>
+              <Text className="text-gray-500 text-center mb-8">{subtitle}</Text>
+              
+              <TouchableOpacity onPress={() => setShowPicker(true)} className="aspect-[3/4] bg-gray-50 rounded-3xl border-2 border-dashed border-gray-300 items-center justify-center overflow-hidden relative shadow-sm">
+                {selectedImage ? 
+                  <Image source={{ uri: selectedImage }} className="w-full h-full" /> : 
+                  <View className="items-center gap-3">
+                    <View className="w-16 h-16 bg-white rounded-full items-center justify-center shadow-sm">
+                        <Camera size={32} color="#6366f1" />
+                    </View>
+                    <Text className="text-gray-500 font-medium">{t('common.upload_photo')}</Text>
+                  </View>
+                }
               </TouchableOpacity>
-              <TouchableOpacity disabled={!selectedImage} onPress={() => setStep(2)} className={`mt-8 h-14 rounded-full justify-center items-center ${selectedImage ? 'bg-indigo-500' : 'bg-zinc-800'}`}>
-                <Text className="text-white font-bold">Siguiente</Text>
+
+              <TouchableOpacity disabled={!selectedImage} onPress={() => setStep(2)} className={`mt-8 h-14 rounded-2xl justify-center items-center shadow-lg ${selectedImage ? 'bg-indigo-600' : 'bg-gray-200'}`}>
+                <Text className={`font-bold text-lg ${selectedImage ? 'text-white' : 'text-gray-400'}`}>Siguiente</Text>
               </TouchableOpacity>
             </View>
           )}
 
+          {/* PASO 2: Selección Opción 1 */}
           {step === 2 && (
             <View className="flex-1">
-              <Text className="text-white text-2xl font-bold mb-6 text-center">{step1Title}</Text>
-              <ScrollView contentContainerStyle={{ gap: 12 }}>
+              <Text className="text-gray-900 text-2xl font-bold mb-6 text-center">{step1Title}</Text>
+              <ScrollView contentContainerStyle={{ gap: 12 }} showsVerticalScrollIndicator={false}>
                 {step1Options.map(opt => (
-                  <TouchableOpacity key={opt.id} onPress={() => setOpt1(opt)} className={`p-4 rounded-xl border flex-row items-center gap-4 ${opt1?.id === opt.id ? 'bg-indigo-500/20 border-indigo-500' : 'bg-zinc-900 border-zinc-800'}`}>
-                    <Image source={{ uri: opt.image }} className="w-16 h-16 rounded-lg" />
-                    <Text className="text-white font-bold text-lg">{opt.label}</Text>
-                    {opt1?.id === opt.id && <Check size={20} color="#818cf8" style={{ marginLeft: 'auto' }} />}
+                  <TouchableOpacity 
+                    key={opt.id} 
+                    onPress={() => setOpt1(opt)} 
+                    className={`p-3 rounded-2xl border flex-row items-center gap-4 transition-all ${opt1?.id === opt.id ? 'bg-indigo-50 border-indigo-500 shadow-sm' : 'bg-white border-gray-100 shadow-sm'}`}
+                  >
+                    <Image source={{ uri: opt.image }} className="w-16 h-16 rounded-xl bg-gray-200" />
+                    <Text className={`font-bold text-lg ${opt1?.id === opt.id ? 'text-indigo-900' : 'text-gray-700'}`}>{opt.label}</Text>
+                    {opt1?.id === opt.id && <View className="ml-auto bg-indigo-500 rounded-full p-1"><Check size={14} color="white" /></View>}
                   </TouchableOpacity>
                 ))}
               </ScrollView>
-              <TouchableOpacity disabled={!opt1} onPress={() => setStep(3)} className={`mt-4 h-14 rounded-full justify-center items-center ${opt1 ? 'bg-indigo-500' : 'bg-zinc-800'}`}>
-                <Text className="text-white font-bold">Siguiente</Text>
+              <TouchableOpacity disabled={!opt1} onPress={() => setStep(3)} className={`mt-4 h-14 rounded-2xl justify-center items-center shadow-md ${opt1 ? 'bg-indigo-600' : 'bg-gray-200'}`}>
+                <Text className={`font-bold text-lg ${opt1 ? 'text-white' : 'text-gray-400'}`}>Siguiente</Text>
               </TouchableOpacity>
             </View>
           )}
 
+          {/* PASO 3: Selección Opción 2 (Grilla visual) */}
           {step === 3 && (
             <View className="flex-1">
-              <Text className="text-white text-2xl font-bold mb-6 text-center">{step2Title}</Text>
-              <ScrollView contentContainerStyle={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10 }}>
+              <Text className="text-gray-900 text-2xl font-bold mb-6 text-center">{step2Title}</Text>
+              <ScrollView contentContainerStyle={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10 }} showsVerticalScrollIndicator={false}>
                 {step2Options.map(opt => (
-                  <TouchableOpacity key={opt.id} onPress={() => setOpt2(opt)} className={`w-[48%] aspect-square rounded-2xl overflow-hidden border-2 ${opt2?.id === opt.id ? 'border-indigo-500' : 'border-transparent'}`}>
+                  <TouchableOpacity 
+                    key={opt.id} 
+                    onPress={() => setOpt2(opt)} 
+                    className={`w-[48%] aspect-square rounded-2xl overflow-hidden border-2 relative shadow-sm ${opt2?.id === opt.id ? 'border-indigo-500' : 'border-white'}`}
+                  >
                     <Image source={{ uri: opt.image }} className="w-full h-full" />
-                    <View className="absolute inset-0 bg-black/40 justify-end p-3">
-                      <Text className="text-white font-bold">{opt.label}</Text>
-                    </View>
+                    {/* Overlay gradiente para leer el texto */}
+                    <LinearGradient colors={['transparent', 'rgba(0,0,0,0.7)']} className="absolute inset-0 justify-end p-3">
+                        <Text className="text-white font-bold text-sm shadow-sm">{opt.label}</Text>
+                    </LinearGradient>
+                    {opt2?.id === opt.id && <View className="absolute top-2 right-2 bg-indigo-500 rounded-full p-1.5"><Check size={12} color="white" /></View>}
                   </TouchableOpacity>
                 ))}
               </ScrollView>
-              <TouchableOpacity disabled={!opt2 || isProcessing} onPress={handleGenerate} className={`mt-4 h-14 rounded-full justify-center items-center ${opt2 ? 'bg-indigo-500' : 'bg-zinc-800'}`}>
-                {isProcessing ? <ActivityIndicator color="white" /> : <Text className="text-white font-bold">Generar ✨</Text>}
+              <TouchableOpacity disabled={!opt2 || isProcessing} onPress={handleGenerate} className={`mt-4 h-14 rounded-2xl justify-center items-center shadow-lg ${opt2 ? 'bg-indigo-600' : 'bg-gray-200'}`}>
+                {isProcessing ? <ActivityIndicator color="white" /> : <Text className={`font-bold text-lg ${opt2 ? 'text-white' : 'text-gray-400'}`}>Generar ✨</Text>}
               </TouchableOpacity>
             </View>
           )}
@@ -212,12 +243,25 @@ export default function WizardToolScreen({
       </SafeAreaView>
 
       <Modal visible={showPicker} transparent animationType="slide">
-        <View className="flex-1 justify-end bg-black/60">
-          <View className="bg-zinc-900 p-6 rounded-t-3xl gap-4">
-            <Text className="text-white font-bold text-center text-lg mb-2">{t('common.select_image')}</Text>
-            <TouchableOpacity onPress={() => pickImage(true)} className="bg-zinc-800 p-4 rounded-xl flex-row gap-3"><Camera color="white" /><Text className="text-white font-bold">{t('common.camera')}</Text></TouchableOpacity>
-            <TouchableOpacity onPress={() => pickImage(false)} className="bg-zinc-800 p-4 rounded-xl flex-row gap-3"><ImageIcon color="white" /><Text className="text-white font-bold">{t('common.gallery')}</Text></TouchableOpacity>
-            <TouchableOpacity onPress={() => setShowPicker(false)} className="p-4 items-center"><Text className="text-zinc-500 font-bold">{t('common.cancel')}</Text></TouchableOpacity>
+        {/* Modal estilo hoja inferior clara */}
+        <View className="flex-1 justify-end bg-black/40">
+          <View className="bg-white p-6 rounded-t-[32px] gap-4 shadow-2xl">
+            <View className="w-12 h-1.5 bg-gray-200 rounded-full self-center mb-2" />
+            <Text className="text-gray-900 font-bold text-center text-xl mb-4">{t('common.select_image')}</Text>
+            
+            <TouchableOpacity onPress={() => pickImage(true)} className="bg-gray-50 p-4 rounded-2xl flex-row gap-4 items-center border border-gray-100">
+                <View className="bg-white p-2 rounded-full shadow-sm"><Camera color="#4f46e5" size={24} /></View>
+                <Text className="text-gray-900 font-bold text-lg">{t('common.camera')}</Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity onPress={() => pickImage(false)} className="bg-gray-50 p-4 rounded-2xl flex-row gap-4 items-center border border-gray-100">
+                <View className="bg-white p-2 rounded-full shadow-sm"><ImageIcon color="#4f46e5" size={24} /></View>
+                <Text className="text-gray-900 font-bold text-lg">{t('common.gallery')}</Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity onPress={() => setShowPicker(false)} className="p-4 items-center mt-2">
+                <Text className="text-gray-400 font-bold text-base">{t('common.cancel')}</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </Modal>

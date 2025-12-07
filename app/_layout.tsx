@@ -13,7 +13,16 @@ import Purchases from 'react-native-purchases';
 import { REVENUECAT_API_KEY } from '../src/config/secrets';
 import "../src/i18n/index";
 import "./global.css";
+import {
+  configureReanimatedLogger,
+  ReanimatedLogLevel,
+} from 'react-native-reanimated';
 
+// Silencia la advertencia de escritura en render (Falso positivo común)
+configureReanimatedLogger({
+  level: ReanimatedLogLevel.warn,
+  strict: false, // Desactiva el modo estricto para evitar el aviso "Writing to value..."
+});
 SplashScreen.preventAutoHideAsync();
 
 // Definimos el Tema "Glassy Light" usando variables compatibles
