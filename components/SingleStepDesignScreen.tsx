@@ -1,10 +1,9 @@
-// components/SingleStepDesignScreen.tsx
 import * as FileSystem from 'expo-file-system/legacy';
 import * as ImagePicker from 'expo-image-picker';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as MediaLibrary from 'expo-media-library';
 import { useRouter } from 'expo-router';
-import { ArrowLeft, Camera, Check, Download, Flag, Image as ImageIcon, Sparkles, X } from 'lucide-react-native';
+import { ArrowLeft, Camera, Flag, Image as ImageIcon, Sparkles, X } from 'lucide-react-native';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Alert, Image, Modal, ScrollView, Text, TouchableOpacity, View } from 'react-native';
@@ -12,13 +11,13 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { generateDesignImage } from '../src/services/designService';
 
 export interface DesignOption {
-  id: string; // ID en la base de datos (ej: 'garden_zen')
+  id: string; // ID en la base de datos
   label: string;
   image: string;
 }
 
 interface SingleStepProps {
-  featureId: string; // 'gardendesign'
+  featureId: string;
   title: string;
   subtitle: string;
   price: number;
@@ -64,7 +63,6 @@ export default function SingleStepDesignScreen({
     
     setIsProcessing(true);
     try {
-      // Usamos el servicio nuevo. Enviamos el estilo como option1Id
       const result = await generateDesignImage({
         imageUri: selectedImage,
         featureId: featureId,
@@ -103,7 +101,7 @@ export default function SingleStepDesignScreen({
     setSelectedImage(null);
   };
 
-  // RESULTADO
+  // PANTALLA DE RESULTADO (Se mantiene oscura para resaltar la imagen generada)
   if (resultImage) {
     return (
       <View className="flex-1 bg-black">
@@ -121,43 +119,83 @@ export default function SingleStepDesignScreen({
     );
   }
 
-  // SELECCIÓN
+  // PANTALLA DE SELECCIÓN (Estilo Claro)
+// SELECCIÓN
   return (
-    <View className="flex-1 bg-[#0f0f0f]">
-      <Image source={{ uri: selectedImage || backgroundImage }} className="absolute w-full h-full opacity-40" blurRadius={selectedImage ? 0 : 30} resizeMode="cover" />
-      <LinearGradient colors={['transparent', '#0f0f0f']} className="absolute w-full h-full" />
+    // 1. CAMBIO DE FONDO: De bg-[#0f0f0f] a bg-white
+    <View className="flex-1 bg-white">
+      
+      <Image 
+        source={{ uri: selectedImage || backgroundImage }} 
+        // 2. CAMBIO DE IMAGEN: opacity-60 y blurRadius={20} (Igual que GenericTool)
+        className="absolute w-full h-full opacity-60" 
+        blurRadius={selectedImage ? 0 : 20} 
+        resizeMode="cover" 
+      />
+      
+      {/* 3. CAMBIO DE GRADIENTE: De transparente a Blanco (#ffffff) */}
+      <LinearGradient 
+        colors={['rgba(255,255,255,0)', '#ffffff']} 
+        className="absolute w-full h-full" 
+      />
       
       <SafeAreaView className="flex-1 px-6">
         <View className="flex-row justify-between items-center mb-6">
-          <TouchableOpacity onPress={() => router.back()} className="w-10 h-10 bg-zinc-800 rounded-full items-center justify-center">
-            <ArrowLeft size={20} color="white" />
+          {/* 4. BOTÓN ATRÁS: Fondo blanco y borde gris para contraste */}
+          <TouchableOpacity onPress={() => router.back()} className="w-10 h-10 bg-white rounded-full items-center justify-center border border-gray-200">
+            <ArrowLeft size={20} color="#374151" /> {/* Icono Gris Oscuro */}
           </TouchableOpacity>
-          {selectedImage && <TouchableOpacity onPress={() => setSelectedImage(null)} className="bg-black/40 px-3 py-1 rounded-full"><Text className="text-white text-xs">{t('common.cancel')}</Text></TouchableOpacity>}
+          
+          {selectedImage && (
+            <TouchableOpacity onPress={() => setSelectedImage(null)} className="bg-white/80 px-3 py-1 rounded-full border border-gray-200">
+              <Text className="text-gray-900 text-xs font-bold">{t('common.cancel')}</Text>
+            </TouchableOpacity>
+          )}
         </View>
 
         <View className="flex-1 justify-end pb-8">
           {!selectedImage ? (
             <View>
-              <Text className="text-white text-4xl font-bold mb-2">{title}</Text>
-              <Text className="text-zinc-400 text-lg mb-8">{subtitle}</Text>
-              <TouchableOpacity onPress={() => setShowPicker(true)} className="h-16 bg-indigo-500 rounded-2xl flex-row items-center justify-center shadow-lg">
+              {/* 5. TEXTOS: Cambiar text-white a text-gray-900 (Oscuro) */}
+              <Text className="text-gray-900 text-4xl font-bold mb-2">{title}</Text>
+              <Text className="text-gray-500 text-lg mb-8">{subtitle}</Text>
+              
+              <TouchableOpacity onPress={() => setShowPicker(true)} className="h-16 bg-indigo-600 rounded-2xl flex-row items-center justify-center">
                 <Camera size={24} color="white" className="mr-3" />
                 <Text className="text-white font-bold text-lg">{t('common.upload_photo')} ({price} 💎)</Text>
               </TouchableOpacity>
             </View>
           ) : (
-            <View className="bg-black/80 p-6 rounded-3xl border border-white/10">
-               <Text className="text-zinc-400 text-xs font-bold mb-3 uppercase tracking-widest">{selectionTitle || t('generic_tool.choose_style')}</Text>
+            // CAJA DE SELECCIÓN (Estilo Glassy Light)
+            <View className="bg-white/80 p-6 rounded-3xl border border-white/40">
+               <Text className="text-gray-500 text-xs font-bold mb-3 uppercase tracking-widest">{selectionTitle || t('generic_tool.choose_style')}</Text>
                
                <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 12 }}>
                  {options.map((opt) => (
                    <TouchableOpacity key={opt.id} onPress={() => setSelectedOption(opt.id)} activeOpacity={0.8} className="relative">
-                     <View className={`w-24 h-32 rounded-xl overflow-hidden border-2 ${selectedOption === opt.id ? 'border-indigo-500' : 'border-white/20'}`}>
+                     <View className={`w-24 h-32 rounded-xl overflow-hidden border-2 ${selectedOption === opt.id ? 'border-indigo-600' : 'border-gray-200'}`}>
                        <Image source={{ uri: opt.image }} className="w-full h-full" />
-                       <View className="absolute inset-0 bg-black/30" />
+                       
+                       {/* MEJORA 1: Degradado negro abajo para que el texto resalte (sustituye al bg-black/10) */}
+                       <LinearGradient 
+                          colors={['transparent', 'rgba(0,0,0,0.7)']} 
+                          className="absolute bottom-0 w-full h-16" 
+                       />
                      </View>
-                     <Text className={`absolute bottom-2 w-full text-center text-xs font-bold ${selectedOption === opt.id ? 'text-white' : 'text-zinc-300'}`}>{opt.label}</Text>
-                     {selectedOption === opt.id && <View className="absolute top-2 right-2 bg-indigo-500 p-1 rounded-full"><Sparkles size={10} color="white" /></View>}
+                     
+                     {/* MEJORA 2: Sombra de TEXTO (style directo) para contorno negro seguro */}
+                     <Text 
+                        className="absolute bottom-2 w-full text-center text-xs font-bold text-white"
+                        style={{ 
+                          textShadowColor: 'rgba(0, 0, 0, 0.9)',
+                          textShadowOffset: { width: 1, height: 1 },
+                          textShadowRadius: 3
+                        }}
+                     >
+                        {opt.label}
+                     </Text>
+                     
+                     {selectedOption === opt.id && <View className="absolute top-2 right-2 bg-indigo-600 p-1 rounded-full"><Sparkles size={10} color="white" /></View>}
                    </TouchableOpacity>
                  ))}
                </ScrollView>
@@ -165,7 +203,7 @@ export default function SingleStepDesignScreen({
                <TouchableOpacity 
                  disabled={isProcessing} 
                  onPress={handleGenerate} 
-                 className={`mt-6 h-14 rounded-xl flex-row items-center justify-center ${isProcessing ? 'bg-zinc-700' : 'bg-indigo-500'}`}
+                 className={`mt-6 h-14 rounded-xl flex-row items-center justify-center ${isProcessing ? 'bg-gray-400' : 'bg-indigo-600'}`}
                >
                  {isProcessing ? <ActivityIndicator color="white" /> : <Text className="text-white font-bold text-lg">{t('generic_tool.generate_btn')}</Text>}
                </TouchableOpacity>
@@ -174,13 +212,25 @@ export default function SingleStepDesignScreen({
         </View>
       </SafeAreaView>
 
+      {/* MODAL (También necesita ajuste a tema claro) */}
       <Modal visible={showPicker} transparent animationType="slide">
-        <View className="flex-1 justify-end bg-black/60">
-          <View className="bg-zinc-900 p-6 rounded-t-3xl gap-4">
-            <Text className="text-white font-bold text-center text-lg mb-2">{t('common.select_image')}</Text>
-            <TouchableOpacity onPress={() => pickImage(true)} className="bg-zinc-800 p-4 rounded-xl flex-row gap-3"><Camera color="white" /><Text className="text-white font-bold">{t('common.camera')}</Text></TouchableOpacity>
-            <TouchableOpacity onPress={() => pickImage(false)} className="bg-zinc-800 p-4 rounded-xl flex-row gap-3"><ImageIcon color="white" /><Text className="text-white font-bold">{t('common.gallery')}</Text></TouchableOpacity>
-            <TouchableOpacity onPress={() => setShowPicker(false)} className="p-4 items-center"><Text className="text-zinc-500 font-bold">{t('common.cancel')}</Text></TouchableOpacity>
+        <View className="flex-1 justify-end bg-black/20">
+          <View className="bg-white p-6 rounded-t-3xl gap-4 border-t border-gray-100">
+            <Text className="text-gray-900 font-bold text-center text-lg mb-2">{t('common.select_image')}</Text>
+            
+            <TouchableOpacity onPress={() => pickImage(true)} className="bg-gray-50 p-4 rounded-xl flex-row gap-3 items-center border border-gray-100">
+                <Camera color="#4f46e5" />
+                <Text className="text-gray-700 font-bold">{t('common.camera')}</Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity onPress={() => pickImage(false)} className="bg-gray-50 p-4 rounded-xl flex-row gap-3 items-center border border-gray-100">
+                <ImageIcon color="#4f46e5" />
+                <Text className="text-gray-700 font-bold">{t('common.gallery')}</Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity onPress={() => setShowPicker(false)} className="p-4 items-center">
+                <Text className="text-gray-400 font-bold">{t('common.cancel')}</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </Modal>

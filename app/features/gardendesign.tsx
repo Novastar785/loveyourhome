@@ -1,4 +1,3 @@
-// app/features/gardendesign.tsx
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import SingleStepDesignScreen, { DesignOption } from '../../components/SingleStepDesignScreen';
@@ -9,7 +8,6 @@ export default function GardenDesignScreen() {
   const { getCost } = useRemoteConfig();
 
   // Opciones de Estilo para el Jardín
-  // Estos IDs (garden_zen, garden_tropical) deben existir en tu tabla 'ai_prompts'
   const gardenStyles: DesignOption[] = [
     { 
       id: 'garden_zen', 
@@ -40,10 +38,11 @@ export default function GardenDesignScreen() {
 
   return (
     <SingleStepDesignScreen
-      featureId="gardendesign" // ID base en DB
+      featureId="gardendesign"
       title={t('tools.gardendesign.title')}
       subtitle={t('tools.gardendesign.subtitle')}
       price={getCost('gardendesign', 3)}
+      // Esta es la misma imagen que usas en el Home para la tarjeta de Garden Design
       backgroundImage="https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?w=800"
       options={gardenStyles}
       selectionTitle={t('wizard.step_style_title')}
