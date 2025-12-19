@@ -4,6 +4,7 @@ import { Stack } from "expo-router";
 import * as SplashScreen from 'expo-splash-screen';
 import * as SystemUI from 'expo-system-ui';
 import LottieView from 'lottie-react-native';
+import { initializeUser } from '../src/services/user';
 import { useEffect, useRef, useState } from "react";
 import { Platform, StyleSheet, View, StatusBar } from "react-native";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -46,37 +47,30 @@ export default function Layout() {
   useEffect(() => {
     async function prepare() {
       try {
+        // 1. Ajustes de UI (Android)
         if (Platform.OS === 'android') {
-          // Ajustes de UI de sistema para modo claro
           await SystemUI.setBackgroundColorAsync("#F5F3FF");
-          
-          // 1. Restaurar modo inmersivo (Ocultar barras)
           await NavigationBar.setVisibilityAsync("hidden");
           StatusBar.setHidden(true);
-
           await NavigationBar.setBehaviorAsync("overlay-swipe");
           await NavigationBar.setBackgroundColorAsync("transparent");
-          
-          // 2. Corregir contraste: Iconos y Texto OSCUROS
-          // Esto asegura que no se vean "invisibles" (blanco sobre blanco) al deslizar
           await NavigationBar.setButtonStyleAsync("dark"); 
           StatusBar.setBarStyle("dark-content");
         }
 
-        // --- LÓGICA ORIGINAL: INIT REVENUECAT ---
-        const initRevenueCat = async () => {
-          try {
-            if (REVENUECAT_API_KEY) {
-                await Purchases.configure({ apiKey: REVENUECAT_API_KEY });
-            }
-          } catch (e) {
-            console.error("Error initializing RevenueCat:", e);
-          }
-        };
+        // 2. Configurar RevenueCat PRIMERO
+        if (REVENUECAT_API_KEY) {
+          await Purchases.configure({ apiKey: REVENUECAT_API_KEY });
+          console.log("RevenueCat configurado");
+        }
 
-        await initRevenueCat();
+        // 3. Inicializar usuario en la DB (Ahora que RevenueCat está listo)
+        // Lo llamamos sin 'await' si no quieres que bloquee el splash screen,
+        // o con 'await' si quieres asegurar que el usuario exista antes de que entre a la app.
+        await initializeUser(); 
+
       } catch (e) {
-        console.warn(e);
+        console.warn("Error en la preparación:", e);
       } finally {
         setAppIsReady(true);
       }

@@ -50,7 +50,7 @@ export default function HomeScreen() {
       title: t('tools.interiordesign.title'), 
       subtitle: t('tools.interiordesign.subtitle'), 
       price: getCost('interiordesign', 3), 
-      image: 'https://rizzflows.com/img_aura/gallery/placeholder1.png', 
+      image: 'http://rizzflows.com/img_lyh/interior.png', 
       badge: 'NEW' 
     },
     { 
@@ -59,7 +59,7 @@ export default function HomeScreen() {
       title: t('tools.exteriordesign.title'), 
       subtitle: t('tools.exteriordesign.subtitle'), 
       price: getCost('exteriordesign', 3), 
-      image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&q=80', 
+      image: 'http://rizzflows.com/img_lyh/exterior.jpg', 
       badge: 'PRO' 
     },
     { 
@@ -68,7 +68,7 @@ export default function HomeScreen() {
       title: t('tools.gardendesign.title'), 
       subtitle: t('tools.gardendesign.subtitle'), 
       price: getCost('gardendesign', 3), 
-      image: 'https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?w=600', 
+      image: 'http://rizzflows.com/img_lyh/jardin.png', 
       badge: 'PRO' 
     },
     { 
@@ -77,7 +77,7 @@ export default function HomeScreen() {
      title: t('tools.styletransfer.title'), 
      subtitle: t('tools.styletransfer.subtitle'), 
      price: getCost('styletransfer', 3), 
-     image: 'https://rizzflows.com/img_aura/Vtryon.png', 
+     image: 'http://rizzflows.com/img_lyh/transfer.png', 
      badge: 'FUN' 
    },
  ];
