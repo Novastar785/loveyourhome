@@ -27,6 +27,8 @@
     "error_generation": "O modelo não conseguiu gerar a imagem. Tente novamente.",
     "error_technical": "Houve um problema técnico.",
     "error_connection": "Falha na conexão.",
+    "next": "Próximo",
+    "error_save": "Não foi possível salvar no álbum.",
     "permission_denied": "Permissão negada",
     "saved": "Salvo",
     "saved_msg_album": "Foto salva no álbum 'LoveYourHome'.",

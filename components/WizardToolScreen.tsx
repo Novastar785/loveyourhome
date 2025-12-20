@@ -117,7 +117,7 @@ export default function WizardToolScreen({
       Alert.alert(t('common.saved'));
   } catch(e) { 
       console.error(e);
-      Alert.alert(t('common.error'), "No se pudo guardar en el álbum."); 
+      Alert.alert(t('common.error'), t('common.error_save')); // Antes: "No se pudo guardar en el álbum."
   }
 };
 
@@ -203,7 +203,7 @@ export default function WizardToolScreen({
                 className="aspect-[4/3] bg-gray-50 rounded-3xl border-2 border-dashed border-gray-300 items-center justify-center overflow-hidden relative shadow-sm"
               >
                 {selectedImage ? 
-                  <Image source={{ uri: selectedImage }} className="w-full h-full" resizeMode="cover" /> : 
+                  <Image source={{ uri: selectedImage }} className="w-full h-full" resizeMode="contain" /> : 
                   <View className="items-center gap-3">
                     <View className="w-16 h-16 bg-white rounded-full items-center justify-center shadow-sm">
                         <Camera size={32} color="#6366f1" />
@@ -214,7 +214,7 @@ export default function WizardToolScreen({
               </TouchableOpacity>
 
               <TouchableOpacity disabled={!selectedImage} onPress={() => setStep(2)} className={`mt-8 h-14 rounded-2xl justify-center items-center shadow-lg ${selectedImage ? 'bg-indigo-600' : 'bg-gray-200'}`}>
-                <Text className={`font-bold text-lg ${selectedImage ? 'text-white' : 'text-gray-400'}`}>Siguiente</Text>
+                <Text className={`font-bold text-lg ${selectedImage ? 'text-white' : 'text-gray-400'}`}>{t('common.next')}</Text>
               </TouchableOpacity>
             </View>
           )}
@@ -237,7 +237,7 @@ export default function WizardToolScreen({
                 ))}
               </ScrollView>
               <TouchableOpacity disabled={!opt1} onPress={() => setStep(3)} className={`mt-4 h-14 rounded-2xl justify-center items-center shadow-md ${opt1 ? 'bg-indigo-600' : 'bg-gray-200'}`}>
-                <Text className={`font-bold text-lg ${opt1 ? 'text-white' : 'text-gray-400'}`}>Siguiente</Text>
+                <Text className={`font-bold text-lg ${opt1 ? 'text-white' : 'text-gray-400'}`}>{t('common.next')}</Text>
               </TouchableOpacity>
             </View>
           )}
@@ -263,7 +263,7 @@ export default function WizardToolScreen({
                 ))}
               </ScrollView>
               <TouchableOpacity disabled={!opt2 || isProcessing} onPress={handleGenerate} className={`mt-4 h-14 rounded-2xl justify-center items-center shadow-lg ${opt2 ? 'bg-indigo-600' : 'bg-gray-200'}`}>
-                {isProcessing ? <ActivityIndicator color="white" /> : <Text className={`font-bold text-lg ${opt2 ? 'text-white' : 'text-gray-400'}`}>Generar ✨</Text>}
+                {isProcessing ? <ActivityIndicator color="white" /> : <Text className={`font-bold text-lg ${opt2 ? 'text-white' : 'text-gray-400'}`}>{t('generic_tool.generate_btn')} ✨</Text>}
               </TouchableOpacity>
             </View>
           )}

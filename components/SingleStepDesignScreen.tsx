@@ -95,7 +95,9 @@ export default function SingleStepDesignScreen({
         await FileSystem.writeAsStringAsync(filename, base64, { encoding: 'base64' });
         await MediaLibrary.createAssetAsync(filename);
         Alert.alert(t('common.saved'));
-    } catch(e) { Alert.alert("Error saving"); }
+    } catch(e) { 
+        Alert.alert(t('common.error'), t('common.error_save')); 
+    }
   };
 
   const reset = () => {

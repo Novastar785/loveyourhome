@@ -109,7 +109,7 @@ export default function DualImageToolScreen({
       }
 
       Alert.alert(t('common.saved'));
-  } catch(e) { Alert.alert("Error saving"); }
+  } catch(e) { Alert.alert(t('common.error'), t('common.error_save')); } 
 };
 
   const reset = () => {
@@ -245,7 +245,7 @@ export default function DualImageToolScreen({
             <>
                 <Sparkles size={24} color={img1 && img2 ? "white" : "#9ca3af"} className="mr-2" />
                 <Text className={`font-bold text-lg ${img1 && img2 ? 'text-white' : 'text-gray-400'}`}>
-                    Transferir Estilo
+                    {t('styletransfer_tool.btn_ready')}
                 </Text>
             </>
           )}

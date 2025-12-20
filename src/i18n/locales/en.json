@@ -25,6 +25,8 @@
     "error": "Error",
     "delete": "Delete",
     "info": "Info",
+    "next": "Next",
+    "error_save": "Could not save to album.",
     "error_generation": "The model could not generate the image. Try again.",
     "error_technical": "There was a technical problem.",
     "error_connection": "Connection failed.",

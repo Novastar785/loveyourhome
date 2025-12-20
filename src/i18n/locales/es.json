@@ -27,6 +27,8 @@
     "error_technical": "Hubo un problema técnico.",
     "error_connection": "Falló la conexión.",
     "permission_denied": "Permiso denegado",
+    "next": "Siguiente",
+    "error_save": "No se pudo guardar en el álbum.",
     "saved": "✅ Guardado",
     "saved_msg_album": "Foto guardada en el álbum 'LoveYourHome'.",
     "saved_msg": "Imagen guardada.",
