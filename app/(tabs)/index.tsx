@@ -121,7 +121,7 @@ export default function HomeScreen() {
           <View className="flex-row justify-between items-end px-6 pt-2 mb-8">
             <View>
               <Text className="text-gray-500 text-[10px] font-bold tracking-widest uppercase mb-1">LOVE YOUR HOME</Text>
-              <Text className="text-gray-900 text-3xl font-extrabold leading-tight">Your Dream Home</Text>
+              <Text className="text-gray-900 text-3xl font-extrabold leading-tight">{t('home.subtitle')}</Text>
             </View>
             
             <TouchableOpacity 

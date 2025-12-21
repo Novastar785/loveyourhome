@@ -47,7 +47,7 @@ const AutoCompareSlider = () => {
   return (
     <View className="w-full h-[480px] relative rounded-3xl overflow-hidden shadow-sm bg-gray-100 mt-6">
       <Image 
-        source={require('../assets/images/onboarding-before.jpg')} 
+        source={require('../assets/images/onboarding-after.jpg')} 
         className="w-full h-full object-cover"
       />
       
@@ -67,7 +67,7 @@ const AutoCompareSlider = () => {
 
       <Animated.View style={[styles.overlayImage, animatedStyle]}>
         <Image 
-          source={require('../assets/images/onboarding-after.jpg')} 
+          source={require('../assets/images/onboarding-before.jpg')} 
           style={{ width: width - 48, height: 480 }} 
           resizeMode="cover"
         />
