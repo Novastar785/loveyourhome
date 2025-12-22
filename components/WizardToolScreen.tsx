@@ -8,7 +8,7 @@ import { useRouter } from 'expo-router';
 import { ArrowLeft, ArrowRight, Camera, Check, Flag, Image as ImageIcon, Sparkles, X } from 'lucide-react-native';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, Alert, Image, Modal, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, Image, Modal, ScrollView, Text, ImageSourcePropType, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { generateDesignImage } from '../src/services/designService';
 import * as StoreReview from 'expo-store-review';
@@ -17,14 +17,14 @@ import * as Haptics from 'expo-haptics';
 export interface WizardOption {
   id: string;
   label: string;
-  image: string;
+  image: string | ImageSourcePropType;
 }
 
 interface WizardProps {
   featureId: string;
   title: string;
   subtitle: string;
-  backgroundImage: string;
+  backgroundImage: string | ImageSourcePropType;
   step1Title: string;
   step1Options: WizardOption[];
   step2Title: string;
@@ -170,7 +170,11 @@ export default function WizardToolScreen({
 
   return (
     <View className="flex-1 bg-white">
-      <Image source={{ uri: backgroundImage }} className="absolute w-full h-2/3 opacity-10" blurRadius={40} />
+      <Image 
+  source={typeof backgroundImage === 'string' ? { uri: backgroundImage } : backgroundImage} 
+  className="absolute w-full h-2/3 opacity-10" 
+  blurRadius={40} 
+/>
       <LinearGradient colors={['rgba(255,255,255,0)', '#ffffff']} className="absolute w-full h-full" />
       
       <SafeAreaView className="flex-1 px-6">
@@ -240,7 +244,10 @@ export default function WizardToolScreen({
                     accessibilityState={{ checked: opt1?.id === opt.id }}
                     accessibilityLabel={opt.label}
                   >
-                    <Image source={{ uri: opt.image }} className="w-32 h-32 rounded-xl bg-gray-200" />
+                    <Image 
+  source={typeof opt.image === 'string' ? { uri: opt.image } : opt.image} 
+  className="w-32 h-32 rounded-xl bg-gray-200" 
+/>
                     <Text className={`font-bold text-lg ${opt1?.id === opt.id ? 'text-indigo-900' : 'text-gray-700'}`}>{opt.label}</Text>
                     {opt1?.id === opt.id && <View className="ml-auto bg-indigo-500 rounded-full p-1"><Check size={14} color="white" /></View>}
                   </TouchableOpacity>
@@ -273,7 +280,10 @@ export default function WizardToolScreen({
                     accessibilityState={{ checked: opt2?.id === opt.id }}
                     accessibilityLabel={opt.label}
                   >
-                    <Image source={{ uri: opt.image }} className="w-full h-full" />
+                    <Image 
+  source={typeof opt.image === 'string' ? { uri: opt.image } : opt.image} 
+  className="w-full h-full" 
+/>
                     <LinearGradient colors={['transparent', 'rgba(0,0,0,0.7)']} className="absolute inset-0 justify-end p-3">
                         <Text className="text-white font-bold text-sm shadow-sm">{opt.label}</Text>
                     </LinearGradient>

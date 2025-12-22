@@ -4,9 +4,11 @@ import { useFocusEffect, useRouter } from 'expo-router';
 import { Plus, Sparkles, X } from 'lucide-react-native';
 // 1. IMPORTAMOS cssInterop
 import { cssInterop } from 'nativewind'; 
-import React, { useCallback, useEffect, useState } from 'react';
+// MODIFICACION: Añadido useRef para el estado de la app
+import React, { useCallback, useEffect, useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Dimensions, Image, Modal, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native';
+// MODIFICACION: Añadido AppState para detectar cuando la app vuelve
+import { Dimensions, Image, Modal, ScrollView, StatusBar, Text, TouchableOpacity, View, AppState } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRemoteConfig } from '../../hooks/useRemoteConfig';
 import { getUserCredits } from '../../src/services/revenueCat';
@@ -19,10 +21,10 @@ cssInterop(LinearGradient, {
 const { width } = Dimensions.get('window');
 
 const PLACEHOLDER_GALLERY = [
-  { id: 'p1', uri: 'https://rizzflows.com/img_lyh/galaria1.jpg' },
-  { id: 'p2', uri: 'https://rizzflows.com/img_lyh/style-nordic.jpg' },
-  { id: 'p3', uri: 'https://rizzflows.com/img_lyh/style-modern.jpg' },
-  { id: 'p4', uri: 'https://rizzflows.com/img_lyh/style-minimalist.jpg' },
+  { id: 'p1', uri: require('../../assets/images/galaria1.jpg') },
+  { id: 'p2', uri: require('../../assets/images/style-nordic.jpg') },
+  { id: 'p3', uri: require('../../assets/images/style-modern.jpg') },
+  { id: 'p4', uri: require('../../assets/images/style-minimalist.jpg') },
 ];
 
 export default function HomeScreen() {
@@ -36,12 +38,34 @@ export default function HomeScreen() {
   const [credits, setCredits] = useState(0);
   const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
 
+  // MODIFICACION: Referencia para controlar el estado anterior de la app
+  const appState = useRef(AppState.currentState);
+
+  // MODIFICACION: Función extraída para ser llamada tanto por Focus como por AppState
+  const loadCredits = async () => {
+    const creditData = await getUserCredits();
+    setCredits(creditData.total);
+  };
+
+  // MODIFICACION: Listener para recargar créditos al volver de segundo plano
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', nextAppState => {
+      if (
+        appState.current.match(/inactive|background/) &&
+        nextAppState === 'active'
+      ) {
+        loadCredits();
+      }
+      appState.current = nextAppState;
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
+
   useFocusEffect(
     useCallback(() => {
-      const loadCredits = async () => {
-        const creditData = await getUserCredits();
-        setCredits(creditData.total);
-      };
       loadCredits();
     }, [])
   );
@@ -52,8 +76,8 @@ export default function HomeScreen() {
       route: '/features/interiordesign', 
       title: t('tools.interiordesign.title'), 
       subtitle: t('tools.interiordesign.subtitle'), 
-      price: getCost('interiordesign', 3), 
-      image: 'https://rizzflows.com/img_lyh/interior.png', 
+      price: getCost('interiordesign', 5), 
+      image: require('../../assets/images/img_lyh/interior.jpg'), 
       badge: 'NEW' 
     },
     { 
@@ -62,7 +86,7 @@ export default function HomeScreen() {
       title: t('tools.exteriordesign.title'), 
       subtitle: t('tools.exteriordesign.subtitle'), 
       price: getCost('exteriordesign', 3), 
-      image: 'https://rizzflows.com/img_lyh/exterior.jpg', 
+      image: require('../../assets/images/img_lyh/exterior.jpg'), 
       badge: 'PRO' 
     },
     { 
@@ -71,7 +95,7 @@ export default function HomeScreen() {
       title: t('tools.gardendesign.title'), 
       subtitle: t('tools.gardendesign.subtitle'), 
       price: getCost('gardendesign', 3), 
-      image: 'https://rizzflows.com/img_lyh/jardin.png', 
+      image: require('../../assets/images/img_lyh/jardin.jpg'), 
       badge: 'PRO' 
     },
     { 
@@ -80,7 +104,7 @@ export default function HomeScreen() {
      title: t('tools.styletransfer.title'), 
      subtitle: t('tools.styletransfer.subtitle'), 
      price: getCost('styletransfer', 3), 
-     image: 'https://rizzflows.com/img_lyh/transfer.png', 
+     image: require('../../assets/images/img_lyh/transfer.jpg'),
      badge: 'FUN' 
    },
  ];
@@ -170,7 +194,11 @@ export default function HomeScreen() {
                   accessibilityLabel={t('a11y.open_tool', { title: item.title })}
                   accessibilityHint={item.subtitle}
                 >
-                  <Image source={{ uri: item.image }} className="w-full h-full" resizeMode="cover" />
+                  <Image 
+  source={item.image} 
+  className="w-full h-full" 
+  resizeMode="cover" 
+/>
 
                   {item.badge && (
                     <View className="absolute top-5 right-5 bg-white/90 px-2 py-1 rounded-lg border border-white shadow-sm z-10">
@@ -229,7 +257,11 @@ export default function HomeScreen() {
                   accessibilityLabel={t('a11y.gallery_image_index', { index: index + 1 })}
                   accessibilityHint={t('a11y.gallery_image_hint')}
                 >
-                  <Image source={{ uri: photo.uri }} className="w-full h-full" resizeMode="cover" />
+                  <Image 
+  source={typeof photo.uri === 'string' ? { uri: photo.uri } : photo.uri} 
+  className="w-full h-full" 
+  resizeMode="cover" 
+/>
                   
                   {isShowingPlaceholders && (
                      <View className="absolute top-2 right-2 bg-white/80 px-2 py-1 rounded-md">
