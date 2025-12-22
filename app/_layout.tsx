@@ -15,6 +15,10 @@ import { useQuickActionRouting } from 'expo-quick-actions/router';
 // --- IMPORTANTE: Importar hook de traducción ---
 import { useTranslation } from 'react-i18next';
 
+// 👇 FIX: Imports necesarios para el LinearGradient en producción
+import { LinearGradient } from 'expo-linear-gradient';
+import { cssInterop } from 'nativewind';
+
 import { REVENUECAT_API_KEY } from '../src/config/secrets';
 import "../src/i18n/index";
 import "./global.css";
@@ -28,6 +32,13 @@ configureReanimatedLogger({
   strict: false,
 });
 SplashScreen.preventAutoHideAsync();
+
+// 👇 FIX: Configuración global para que LinearGradient acepte className
+cssInterop(LinearGradient, {
+  className: {
+    target: "style",
+  },
+});
 
 const GlassyTheme: Theme = {
   ...DefaultTheme, 
@@ -88,12 +99,9 @@ export default function Layout() {
           StatusBar.setBarStyle("dark-content");
         }
 
-        // COMENTA ESTAS LÍNEAS:
-        // const hasSeenOnboarding = await AsyncStorage.getItem('HAS_SEEN_ONBOARDING');
-        // setIsFirstLaunch(hasSeenOnboarding !== 'true');
-        
-        // AGREGA ESTA LÍNEA PARA PRUEBAS:
-        setIsFirstLaunch(true);
+           const hasSeenOnboarding = await AsyncStorage.getItem('HAS_SEEN_ONBOARDING');
+           setIsFirstLaunch(hasSeenOnboarding !== 'true');
+
         
         if (REVENUECAT_API_KEY) {
           await Purchases.configure({ apiKey: REVENUECAT_API_KEY });

@@ -3,6 +3,7 @@ import { View, Text, FlatList, Dimensions, Image, TouchableOpacity, StatusBar, S
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage'; 
+import { cssInterop } from 'nativewind'; 
 import LottieView from 'lottie-react-native';
 import { useTranslation } from 'react-i18next'; 
 import * as Haptics from 'expo-haptics';
@@ -17,6 +18,11 @@ import Animated, {
   withDelay
 } from 'react-native-reanimated';
 import { LinearGradient } from 'expo-linear-gradient';
+
+// 2. CONFIGURAMOS LinearGradient PARA QUE ACEPTE CLASES DE TAILWIND
+cssInterop(LinearGradient, {
+  className: "style",
+});
 
 const { width } = Dimensions.get('window');
 

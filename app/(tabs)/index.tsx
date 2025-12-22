@@ -2,12 +2,19 @@ import { LinearGradient } from 'expo-linear-gradient';
 import * as MediaLibrary from 'expo-media-library';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { Plus, Sparkles, X } from 'lucide-react-native';
+// 1. IMPORTAMOS cssInterop
+import { cssInterop } from 'nativewind'; 
 import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dimensions, Image, Modal, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRemoteConfig } from '../../hooks/useRemoteConfig';
 import { getUserCredits } from '../../src/services/revenueCat';
+
+// 2. CONFIGURAMOS LinearGradient PARA QUE ACEPTE CLASES DE TAILWIND
+cssInterop(LinearGradient, {
+  className: "style",
+});
 
 const { width } = Dimensions.get('window');
 
@@ -126,7 +133,6 @@ export default function HomeScreen() {
             
             <TouchableOpacity 
               className="flex-row items-center bg-[#F5F2EF] px-3 py-1.5 rounded-full border border-[#E5E0D8] shadow-sm"
-              // ACCESIBILIDAD
               accessibilityRole="button"
               accessibilityLabel={t('a11y.credits_balance', { count: credits })}
               accessibilityHint={t('a11y.credits_hint')}
@@ -160,7 +166,6 @@ export default function HomeScreen() {
                   className="relative overflow-hidden rounded-[32px] bg-white border border-white"
                   style={{ width: width * 0.75, height: 400, shadowColor: '#4f46e5', shadowOpacity: 0.1, shadowRadius: 10, elevation: 5 }}
                   onPress={() => router.push(item.route as any)}
-                  // ACCESIBILIDAD
                   accessibilityRole="button"
                   accessibilityLabel={t('a11y.open_tool', { title: item.title })}
                   accessibilityHint={item.subtitle}
@@ -173,6 +178,9 @@ export default function HomeScreen() {
                     </View>
                   )}
                   
+                  {/* GRACIAS AL 'cssInterop' ARRIBA, AHORA ESTAS CLASES SÍ FUNCIONARÁN 
+                     CORRECTAMENTE EN LA BUILD NATIVA. 
+                  */}
                   <LinearGradient
                     colors={['transparent', 'rgba(255,255,255,0.8)', 'rgba(255,255,255,1)']}
                     className="absolute bottom-0 w-full h-1/2 justify-end p-6"
@@ -217,7 +225,6 @@ export default function HomeScreen() {
                   onPress={() => setSelectedPhoto(photo.uri)}
                   className="bg-white rounded-3xl mb-6 overflow-hidden border border-gray-100 shadow-sm relative"
                   style={{ width: '100%', height: 240 }}
-                  // ACCESIBILIDAD
                   accessibilityRole="imagebutton"
                   accessibilityLabel={t('a11y.gallery_image_index', { index: index + 1 })}
                   accessibilityHint={t('a11y.gallery_image_hint')}
@@ -257,7 +264,6 @@ export default function HomeScreen() {
             <TouchableOpacity 
               onPress={() => setSelectedPhoto(null)} 
               className="absolute top-12 right-6 w-10 h-10 bg-gray-100 rounded-full items-center justify-center border border-gray-200 shadow-sm"
-              // ACCESIBILIDAD
               accessibilityRole="button"
               accessibilityLabel={t('a11y.close_preview')}
             >

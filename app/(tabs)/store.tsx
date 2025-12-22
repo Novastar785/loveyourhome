@@ -5,6 +5,8 @@ import { useTranslation } from 'react-i18next';
 import { Alert, View } from 'react-native';
 import { CustomerInfo, PurchasesStoreTransaction } from 'react-native-purchases';
 import RevenueCatUI from 'react-native-purchases-ui';
+// 1. IMPORTANTE: Importamos la función de sincronización
+import { initializeUser } from '../../src/services/user';
 
 export default function StoreScreen() {
   const router = useRouter();
@@ -12,8 +14,13 @@ export default function StoreScreen() {
   const isFocused = useIsFocused(); // Detectamos si la pantalla es visible
 
   // Callback de compra exitosa
-  const handlePurchaseCompleted = ({ customerInfo }: { customerInfo: CustomerInfo, storeTransaction: PurchasesStoreTransaction }) => {
+  const handlePurchaseCompleted = async ({ customerInfo }: { customerInfo: CustomerInfo, storeTransaction: PurchasesStoreTransaction }) => {
     console.log("Compra exitosa:", customerInfo);
+    
+    // 2. Sincronizamos usuario inmediatamente tras la compra
+    // Esto asegura que si RevenueCat cambió la identidad (merge/restore implícito)
+    // o simplemente es una compra nueva, los créditos lleguen al usuario correcto.
+    await initializeUser();
     
     // Alerta con redirección al presionar OK
     Alert.alert(
@@ -32,8 +39,12 @@ export default function StoreScreen() {
   };
 
   // Callback de restauración exitosa
-  const handleRestoreCompleted = ({ customerInfo }: { customerInfo: CustomerInfo }) => {
+  const handleRestoreCompleted = async ({ customerInfo }: { customerInfo: CustomerInfo }) => {
     console.log("Restauración:", customerInfo);
+
+    // 3. Sincronizamos usuario (Crítico: restaurar suele cambiar el AppUserID)
+    await initializeUser();
+
     Alert.alert(t('store.restore_title'), t('store.restore_msg'));
   };
 

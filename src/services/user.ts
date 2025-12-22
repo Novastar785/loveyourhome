@@ -27,6 +27,10 @@ export const deleteAccount = async () => {
       i18n.t('profile.account_deleted_msg')
     );
     
+    // Limpieza: Borramos las marcas de este usuario para permitir un futuro registro limpio
+    await AsyncStorage.removeItem(`INIT_${appUserID}`);
+    await AsyncStorage.removeItem('IS_USER_INITIALIZED');
+    
   } catch (e: any) {
     console.error("Error deleting account:", e);
     Alert.alert(i18n.t('common.error'), i18n.t('profile.delete_error'));
@@ -35,15 +39,19 @@ export const deleteAccount = async () => {
 
 export const initializeUser = async () => {
   try {
-    // 1. Verificación local rápida (Igual que antes)
-    const isInitialized = await AsyncStorage.getItem('IS_USER_INITIALIZED');
+    // 1. Obtener ID actual de RevenueCat (Fundamental hacerlo primero)
+    const appUserID = await Purchases.getAppUserID();
+    console.log("Sincronizando usuario:", appUserID);
+
+    // 2. Verificación INTELIGENTE:
+    // En lugar de un bloqueo global, verificamos si ESTE ID específico ya fue sincronizado.
+    // Esto permite que si el ID cambia (Paywall/Restore), el código siga ejecutándose.
+    const initKey = `INIT_${appUserID}`;
+    const isInitialized = await AsyncStorage.getItem(initKey);
+    
     if (isInitialized === 'true') {
       return; 
     }
-
-    // 2. Obtener ID de RevenueCat
-    const appUserID = await Purchases.getAppUserID();
-    console.log("Intentando inicializar usuario vía RPC:", appUserID);
 
     // 3. LLAMADA A LA FUNCIÓN SEGURA (RPC)
     // Ya no hacemos SELECT ni INSERT manual. La base de datos decide.
@@ -53,7 +61,7 @@ export const initializeUser = async () => {
 
     if (error) {
       // Si falla la conexión, NO guardamos el flag local para que lo intente 
-      // de nuevo la próxima vez que abra la app.
+      // de nuevo la próxima vez que abra la app o cambie de pantalla.
       console.error("Error llamando a RPC initialize_new_user:", error);
       return;
     }
@@ -65,14 +73,17 @@ export const initializeUser = async () => {
       
       // Mensaje de bienvenida
       Alert.alert(
-  i18n.t('common.welcome_title'), 
-  i18n.t('common.welcome_gift_msg')
-);
+        i18n.t('common.welcome_title'), 
+        i18n.t('common.welcome_gift_msg')
+      );
     } else {
-      console.log("El usuario ya existía (o la DB lo reportó como existente).");
+      console.log("El usuario ya existía y está sincronizado.");
     }
 
-    // 5. Guardar marca local para no volver a ejecutar esto
+    // 5. Guardar marca local VINCULADA al ID actual
+    await AsyncStorage.setItem(initKey, 'true');
+    
+    // Mantenemos la marca global por compatibilidad, pero ya no bloquea la lógica crítica
     await AsyncStorage.setItem('IS_USER_INITIALIZED', 'true');
 
   } catch (e) {

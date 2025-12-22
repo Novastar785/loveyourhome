@@ -289,7 +289,9 @@ export default function DualImageToolScreen({
             <ActivityIndicator color={img1 && img2 ? "white" : "#9ca3af"} />
           ) : (
             <>
-                <Sparkles size={24} color={img1 && img2 ? "white" : "#9ca3af"} className="mr-2" />
+                <View className="mr-2">
+  <Sparkles size={24} color={img1 && img2 ? "white" : "#9ca3af"} />
+</View>
                 <Text className={`font-bold text-lg ${img1 && img2 ? 'text-white' : 'text-gray-400'}`}>
                     {t('styletransfer_tool.btn_ready')}
                 </Text>

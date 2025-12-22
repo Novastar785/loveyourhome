@@ -217,7 +217,9 @@ export default function SingleStepDesignScreen({
                 // CORRECCIÓN: Ahora usa la clave nueva que agregaste a los JSON
                 accessibilityHint={t('a11y.upload_photo_hint', { cost: price })}
               >
-                <Camera size={24} color="white" className="mr-3" />
+                <View className="mr-3">
+  <Camera size={24} color="white" />
+</View>
                 <Text className="text-white font-bold text-lg">{t('common.upload_photo')} ({price} 💎)</Text>
               </TouchableOpacity>
             </View>
