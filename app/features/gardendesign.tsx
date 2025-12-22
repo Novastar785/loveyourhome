@@ -7,32 +7,32 @@ export default function GardenDesignScreen() {
   const { t } = useTranslation();
   const { getCost } = useRemoteConfig();
 
-  // Opciones de Estilo para el Jardín
+  // Opciones de Estilo para el Jardín con imágenes locales
   const gardenStyles: DesignOption[] = [
     { 
       id: 'garden_zen', 
       label: t('styles.zen'), 
-      image: 'https://rizzflows.com/img_lyh/garden/zen.jpg' 
+      image: require('../../assets/images/img_lyh/garden/zen.jpg')
     },
     { 
       id: 'garden_tropical', 
       label: t('styles.tropical'), 
-      image: 'https://rizzflows.com/img_lyh/garden/tropical.jpg' 
+      image: require('../../assets/images/img_lyh/garden/tropical.jpg')
     },
     { 
       id: 'garden_modern', 
       label: t('styles.modern'), 
-      image: 'https://rizzflows.com/img_lyh/garden/moderm.jpg' 
+      image: require('../../assets/images/img_lyh/garden/moderm.jpg')
     },
     { 
       id: 'garden_english', 
       label: t('styles.english'), 
-      image: 'https://rizzflows.com/img_lyh/garden/english.jpg' 
+      image: require('../../assets/images/img_lyh/garden/english.jpg')
     },
     { 
       id: 'garden_mediterranean', 
       label: t('styles.mediterranean'), 
-      image: 'https://rizzflows.com/img_lyh/garden/mediterranean.jpg' 
+      image: require('../../assets/images/img_lyh/garden/mediterranean.jpg')
     },
   ];
 
@@ -42,8 +42,8 @@ export default function GardenDesignScreen() {
       title={t('tools.gardendesign.title')}
       subtitle={t('tools.gardendesign.subtitle')}
       price={getCost('gardendesign', 3)}
-      // Esta es la misma imagen que usas en el Home para la tarjeta de Garden Design
-      backgroundImage="https://rizzflows.com/img_lyh/jardin.png"
+      // Usando imagen local
+      backgroundImage={require('../../assets/images/img_lyh/jardin.jpg')}
       options={gardenStyles}
       selectionTitle={t('wizard.step_style_title')}
     />

@@ -8,7 +8,7 @@ import { useRouter } from 'expo-router';
 import { ArrowLeft, Camera, Check, Download, Flag, Home, Image as ImageIcon, Palette, Sparkles, X } from 'lucide-react-native';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, Alert, Image, Modal, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, Image, Modal, Text, TouchableOpacity, View, ImageSourcePropType } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { generateDesignImage } from '../src/services/designService';
 import * as StoreReview from 'expo-store-review';
@@ -19,7 +19,7 @@ interface DualImageProps {
   title: string;
   subtitle: string;
   price: number;
-  backgroundImage: string;
+  backgroundImage: ImageSourcePropType;
   label1: string; // "Tu Espacio"
   label2: string; // "Referencia de Estilo"
 }
@@ -198,7 +198,7 @@ export default function DualImageToolScreen({
   return (
     <View className="flex-1 bg-white">
       {/* Fondo decorativo */}
-      <Image source={{ uri: backgroundImage }} className="absolute w-full h-full opacity-10" blurRadius={60} resizeMode="cover" />
+      <Image source={backgroundImage} className="absolute w-full h-full opacity-10" blurRadius={60} resizeMode="cover" />
       <LinearGradient colors={['rgba(255,255,255,0.5)', '#ffffff']} className="absolute w-full h-full" />
       
       <SafeAreaView className="flex-1 px-6">

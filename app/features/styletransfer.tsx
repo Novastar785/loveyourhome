@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import DualImageToolScreen from '../../components/DualImageToolScreen'; // Usamos el nuevo componente
+import DualImageToolScreen from '../../components/DualImageToolScreen'; 
 import { useRemoteConfig } from '../../hooks/useRemoteConfig';
 
 export default function StyleTransferScreen() {
@@ -9,13 +9,14 @@ export default function StyleTransferScreen() {
 
   return (
     <DualImageToolScreen 
-      featureId="styletransfer" // ID en DB
+      featureId="styletransfer" 
       title={t('tools.styletransfer.title')}
       subtitle={t('tools.styletransfer.subtitle')}
       price={getCost('styletransfer', 3)} 
-      backgroundImage="https://rizzflows.com/img_aura/Vtryon.png"
-      label1={t('styletransfer_tool.user_photo')} // "Tu Foto"
-      label2={t('styletransfer_tool.outfit_photo')} // "Foto de Estilo" (Reusa la key o crea una nueva)
+      // Usando imagen local
+      backgroundImage={require('../../assets/images/img_lyh/transfer.jpg')}
+      label1={t('styletransfer_tool.user_photo')} 
+      label2={t('styletransfer_tool.outfit_photo')} 
     />
   );
 }
