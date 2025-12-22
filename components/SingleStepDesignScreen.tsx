@@ -8,7 +8,8 @@ import { ArrowLeft, Camera, Flag, Image as ImageIcon, Sparkles, X, Check } from 
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Alert, Image, Modal, ScrollView, Text, TouchableOpacity, View, ImageSourcePropType } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+// 👇 CAMBIO: Usamos el hook de insets en lugar del componente SafeAreaView
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { generateDesignImage } from '../src/services/designService';
 import BeforeAfterSlider from './BeforeAfterSlider';
 import * as StoreReview from 'expo-store-review';
@@ -36,6 +37,8 @@ export default function SingleStepDesignScreen({
   
   const router = useRouter();
   const { t } = useTranslation();
+  // 👇 CAMBIO: Obtenemos los márgenes seguros
+  const insets = useSafeAreaInsets();
   
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [selectedOption, setSelectedOption] = useState<string | null>(options[0]?.id || null);
@@ -139,9 +142,11 @@ export default function SingleStepDesignScreen({
            <Image source={{ uri: resultImage }} className="absolute w-full h-full" resizeMode="contain" />
         )}
 
-        <SafeAreaView 
+        {/* 👇 CAMBIO: View con padding manual en lugar de SafeAreaView */}
+        <View 
             className="absolute w-full h-full flex-1 justify-between px-6 pb-8" 
             pointerEvents="box-none"
+            style={{ paddingTop: insets.top, paddingBottom: insets.bottom }}
         >
           <View className="flex-row justify-between pt-4" pointerEvents="box-none">
              <TouchableOpacity 
@@ -172,7 +177,7 @@ export default function SingleStepDesignScreen({
                 <Text className="font-bold text-gray-900">{t('common.save')}</Text>
              </TouchableOpacity>
           </View>
-        </SafeAreaView>
+        </View>
       </View>
     );
   }
@@ -191,7 +196,11 @@ export default function SingleStepDesignScreen({
         className="absolute w-full h-full" 
       />
       
-      <SafeAreaView className="flex-1 px-6">
+      {/* 👇 CAMBIO: View con padding manual en lugar de SafeAreaView */}
+      <View 
+        className="flex-1 px-6"
+        style={{ paddingTop: insets.top, paddingBottom: insets.bottom }}
+      >
         {/* Header con Botón Atrás y Badge de Precio */}
         <View className="flex-row justify-between items-center mb-4">
           <TouchableOpacity 
@@ -298,7 +307,7 @@ export default function SingleStepDesignScreen({
                 <View className="flex-1" />
             )}
         </View>
-      </SafeAreaView>
+      </View>
 
       <Modal visible={showPicker} transparent animationType="slide">
         <View className="flex-1 justify-end bg-black/20">
