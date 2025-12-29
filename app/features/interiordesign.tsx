@@ -14,6 +14,7 @@ export default function InteriorDesignScreen() {
 
   const styles: WizardOption[] = [
     { id: 'style_modern', label: t('styles.modern'), image: require('../../assets/images/img_lyh/interior/style-modern.jpg') },
+    { id: 'style_fengshui', label: t('styles.fengshui'), image: require('../../assets/images/img_lyh/interior/style-fengshui.jpg') },
     { id: 'style_boho', label: t('styles.boho'), image: require('../../assets/images/img_lyh/interior/style-boho.jpg') },
     { id: 'style_minimalist', label: t('styles.minimalist'), image: require('../../assets/images/img_lyh/interior/style-minimalist.jpg') },
     { id: 'style_nordic', label: t('styles.nordic'), image: require('../../assets/images/img_lyh/interior/style-nordic.jpg') },

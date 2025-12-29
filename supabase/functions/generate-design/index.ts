@@ -142,9 +142,35 @@ serve(async (req) => {
 
     const result = await model.generateContent(contentParts);
     const response = result.response;
-    const imagePart = response.candidates?.[0]?.content?.parts?.find(p => p.inlineData);
 
-    if (!imagePart) throw new Error("La IA no devolvió imagen.");
+    // 👇 [INICIO DEBUGGING] Agrega este bloque
+    console.log("🔍 [Gemini Debug] Respuesta completa:", JSON.stringify(response, null, 2));
+
+    const candidate = response.candidates?.[0];
+
+    // 1. Verificar si hubo un bloqueo de seguridad u otra razón de parada
+    if (candidate?.finishReason && candidate?.finishReason !== "STOP") {
+       console.warn(`⚠️ [Gemini Warning] La generación se detuvo por: ${candidate.finishReason}`);
+       if (candidate.safetyRatings) {
+         console.warn("🛡️ Safety Ratings:", JSON.stringify(candidate.safetyRatings, null, 2));
+       }
+       throw new Error(`La IA rechazó la solicitud. Razón: ${candidate.finishReason}`);
+    }
+
+    // 2. Intentar obtener la imagen
+    const imagePart = candidate?.content?.parts?.find((p: any) => p.inlineData);
+
+    // 3. Si no hay imagen, buscar si la IA respondió con texto explicativo
+    if (!imagePart) {
+        const textPart = candidate?.content?.parts?.find((p: any) => p.text);
+        if (textPart) {
+            console.error("❌ [Gemini Error] La IA respondió texto en vez de imagen:", textPart.text);
+            // Esto te dirá exactamente por qué la IA se quejó (ej: "No veo una casa aquí")
+            throw new Error(`La IA no generó imagen. Respuesta: "${textPart.text}"`);
+        }
+        throw new Error("La IA no devolvió imagen ni texto explicativo.");
+    }
+    // 👆 [FIN DEBUGGING]
 
     console.log("✨ [Exito] Imagen generada correctamente.");
 

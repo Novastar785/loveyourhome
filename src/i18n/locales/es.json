@@ -95,6 +95,8 @@
   },
   "styles": {
     "modern": "Moderno",
+    "fengshui": "Feng Shui",
+    "fengshui_description": "Equilibrio y armonía mediante la disposición consciente de elementos naturales y flujo de energía.",
     "nordic": "Nórdico",
     "mediterranean": "Mediterráneo",
     "scandinavian": "Escandinavo",

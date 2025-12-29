@@ -96,6 +96,8 @@
   "styles": {
     "modern": "Modern",
     "nordic": "Nordic",
+    "fengshui": "Feng Shui",
+    "fengshui_description": "Balance and harmony through the conscious arrangement of natural elements and energy flow.",
     "mediterranean": "Mediterranean",
     "scandinavian": "Scandinavian",
     "american": "American",

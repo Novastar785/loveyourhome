@@ -96,6 +96,8 @@
   "styles": {
     "modern": "Moderno",
     "nordic": "Nórdico",
+    "fengshui": "Feng Shui",
+    "fengshui_description": "Equilíbrio e harmonia através da disposição consciente de elementos naturais e fluxo de energia.",
     "mediterranean": "Mediterrâneo",
     "scandinavian": "Escandinavo",
     "farmhouse": "Casa de Campo",
